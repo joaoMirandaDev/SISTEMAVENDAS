@@ -1,0 +1,53 @@
+{
+  "pages": {
+    "clientes": {
+      "placeHoldeSearchBar": "Search by name, company name, cpf/cnpj and telephone number",
+      "buttonSearchBar": "Search",
+      "buttonCadastro": "Register customer",
+      "table":{
+        "nomeRazaoSocial": "Name/Business name",
+        "cpfCnpj":  "Cpf/Cnpj",
+        "telefone": "Telephone"
+      },
+      "tooltip": {
+        "visualizar": "View",
+        "editar": "Edit",
+        "excluir": "Delete"
+      },
+      "modal": {
+        "title": "Exclusion of customers",
+        "text": "Do you want to delete the following customer:"
+      }
+    },
+    "login": {
+      "title": "Welcome",
+      "fields": {
+        "email": "Access with your CPF or CNPJ",
+        "password": "Enter your password"
+      },
+      "button": "Login"
+    }
+  },
+  "components": {
+    "button": {
+      "logout": "Logout",
+      "cancelar": "Cancel",
+      "confirmar": "Confirm"
+    },
+    "table": {
+      "action": "Action"
+    }
+  },
+  "documentTitle": {
+    "default": "SISTEMA",
+    "suffix": " | SISTEMA",
+    "fornecedor": {
+      "list": "Fornecedores | SISTEMA",
+      "show": "#{{id}} Visualizar | SISTEMA",
+      "edit": "#{{id}} Edit Category | SISTEMA",
+      "create": "Novo fornecedor | SISTEMA",
+      "clone": "#{{id}} Clone Category | SISTEMA"
+    }
+  }
+
+}
