@@ -56,14 +56,14 @@ export default function Login() {
               component={IMaskInput}
               mask={maskCpfCnpj}
               required
-              placeholder={t('pages.login.fields.email')}
+              placeholder={t('pages.login.cpf')}
             />
             <PasswordInput
-              placeholder={t('pages.login.fields.password')}
+              placeholder={t('pages.login.senha')}
               value={senha}
               onChange={e => setSenha(e.target.value)}
             />
-            <Button onClick={handleLogin}>{t('pages.login.button')}</Button>
+            <Button onClick={handleLogin}>{t('pages.login.entrar')}</Button>
           </Stack>
         </Card>
       </Group>

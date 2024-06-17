@@ -89,7 +89,7 @@ public class ColaboradorService {
     }
 
     public Page<ColaboradorDto> findAllByPage(FilterColaborador filtro) {
-        Pageable pageable = Pagination.createPageableFromFiltro(filtro, CAMPO_ORDENACAO, "nome");
+        Pageable pageable = Pagination.createPageableFromFiltro(filtro, "nome");
         return colaboradorRepository.findAll(ColaboradorSpecification.FiltroColaborador(filtro), pageable).map(ColaboradorDto::new);
     }
 

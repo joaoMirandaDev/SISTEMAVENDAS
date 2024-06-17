@@ -10,14 +10,13 @@ import java.util.Map;
 import java.util.Objects;
 
 public interface Pagination {
-    static Pageable createPageableFromFiltro(FilterColaborador filtro, Map<String, String> CAMPO_MAP, String OrderInitial) {
+    static Pageable createPageableFromFiltro(FilterColaborador filtro, String OrderInitial) {
         if (Objects.isNull(filtro.getId())) {
             filtro.setId(OrderInitial);
             filtro.setDesc(true);
         }
 
-        String campoInterno = CAMPO_MAP.getOrDefault(filtro.getId(), filtro.getId());
-        Sort sort = filtro.isDesc() ? Sort.by(campoInterno).descending() : Sort.by(campoInterno).ascending();
+        Sort sort = filtro.isDesc() ? Sort.by(filtro.getId()).descending() : Sort.by(filtro.getId()).ascending();
         return PageRequest.of(filtro.getPagina(), filtro.getTamanhoPagina(), sort);
     }
 }

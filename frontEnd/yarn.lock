@@ -964,6 +964,13 @@
   dependencies:
     "@mantine/utils" "6.0.17"
 
+"@mantine/dropzone@^7.10.2":
+  version "7.10.2"
+  resolved "https://registry.npmjs.org/@mantine/dropzone/-/dropzone-7.10.2.tgz"
+  integrity sha512-gv5audWdpQ6Et82WWLycK6Iaa0tpIYNllWJYfJDChdaVKWxL8JVgtjlgsM8OXsR0InvvexjYGd2KIGqy0Sd+1g==
+  dependencies:
+    react-dropzone-esm "15.0.1"
+
 "@mantine/form@^5.10.4":
   version "5.10.5"
   resolved "https://registry.npmjs.org/@mantine/form/-/form-5.10.5.tgz"
@@ -2356,7 +2363,7 @@ any-promise@^1.0.0:
 
 apexcharts@^3.49.1:
   version "3.49.1"
-  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-3.49.1.tgz#837d1d4fd80f2c092f0587e8fb6bbc31ad57a0f3"
+  resolved "https://registry.npmjs.org/apexcharts/-/apexcharts-3.49.1.tgz"
   integrity sha512-MqGtlq/KQuO8j0BBsUJYlRG8VBctKwYdwuBtajHgHTmSgUU3Oai+8oYN/rKCXwXzrUlYA+GiMgotAIbXY2BCGw==
   dependencies:
     "@yr/monotone-cubic-spline" "^1.0.3"
@@ -7692,7 +7699,7 @@ rc-virtual-list@^3.11.1, rc-virtual-list@^3.5.1, rc-virtual-list@^3.5.2:
 
 react-apexcharts@^1.4.1:
   version "1.4.1"
-  resolved "https://registry.yarnpkg.com/react-apexcharts/-/react-apexcharts-1.4.1.tgz#95ab31e4d2201308f59f3d2a4b65d10d9d0ea4bb"
+  resolved "https://registry.npmjs.org/react-apexcharts/-/react-apexcharts-1.4.1.tgz"
   integrity sha512-G14nVaD64Bnbgy8tYxkjuXEUp/7h30Q0U33xc3AwtGFijJB9nHqOt1a6eG0WBn055RgRg+NwqbKGtqPxy15d0Q==
   dependencies:
     prop-types "^15.8.1"
@@ -7714,6 +7721,13 @@ react-dom@^18.0.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
+
+react-dropzone-esm@15.0.1:
+  version "15.0.1"
+  resolved "https://registry.npmjs.org/react-dropzone-esm/-/react-dropzone-esm-15.0.1.tgz"
+  integrity sha512-RdeGpqwHnoV/IlDFpQji7t7pTtlC2O1i/Br0LWkRZ9hYtLyce814S71h5NolnCZXsIN5wrZId6+8eQj2EBnEzg==
+  dependencies:
+    prop-types "^15.8.1"
 
 react-gravatar@^2.6.3:
   version "2.6.3"

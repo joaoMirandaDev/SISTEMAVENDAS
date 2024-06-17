@@ -1,14 +1,19 @@
 import {
   ActionIcon,
+  Avatar,
   Flex,
   Group,
   Header as MantineHeader,
+  Menu,
   Sx,
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
+import { useGetLocale } from '@refinedev/core'
 import { RefineThemedLayoutV2HeaderProps } from '@refinedev/mantine'
-import { IconMoonStars, IconSun } from '@tabler/icons'
+import { IconLanguage, IconMoonStars, IconSun } from '@tabler/icons'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
@@ -18,6 +23,9 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   const theme = useMantineTheme()
   const dark = colorScheme === 'dark'
   const borderColor = dark ? theme.colors.dark[6] : theme.colors.gray[2]
+  const locale = useGetLocale()
+  const currentLocale = locale()
+  const { locales } = useRouter()
 
   let stickyStyles: Sx = {}
   if (sticky) {
@@ -47,7 +55,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
         }}
       >
         <Group>
-          {/* <Menu shadow="md">
+          <Menu shadow="md">
             <Menu.Target>
               <ActionIcon variant="outline">
                 <IconLanguage size={18} />
@@ -59,7 +67,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
                 <Menu.Item
                   key={lang}
                   component={Link}
-                  href="/"
+                  href="/colaborador"
                   locale={lang}
                   color={lang === currentLocale ? 'primary' : undefined}
                   icon={
@@ -70,15 +78,15 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
                     />
                   }
                 >
-                  {lang === 'pt' ? 'Português' : 'English'}
+                  {lang === 'en' ? 'English' : 'Português'}
                 </Menu.Item>
               ))}
             </Menu.Dropdown>
-          </Menu> */}
+          </Menu>
 
           <ActionIcon
             variant="outline"
-            color={dark ? 'primary' : 'yellow'}
+            color={dark ? 'yellow' : 'primary'}
             onClick={() => toggleColorScheme()}
             title="Toggle color scheme"
           >

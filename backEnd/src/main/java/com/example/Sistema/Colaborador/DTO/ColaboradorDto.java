@@ -9,8 +9,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Date;
 
 
@@ -20,8 +24,9 @@ import java.util.Date;
 public class ColaboradorDto {
 
     private Integer id;
-    @NotEmpty(message = "Nome não pode estar vazio")
+    @NotEmpty
     private String nome;
+    @NotEmpty
     private String sobrenome;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="GMT-3")
     private Date dataNascimento;
@@ -29,25 +34,37 @@ public class ColaboradorDto {
     private Date dataContratoInicial;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="GMT-3")
     private Date dataContratoFinal;
+    @NotEmpty
     private String sexo;
-    @NotEmpty(message = "CPF não pode estar vazio")
+    @NotEmpty
     private String cpf;
+    @NotEmpty
     private String rg;
+    @NotEmpty
     private String cep;
+    @NotEmpty
     private String rua;
+    @NotEmpty
     private String bairro;
+    @NotEmpty
     private String cidade;
+    @NotEmpty
     private String estado;
+    @NotEmpty
     private String telefone;
+    @PositiveOrZero
     private Integer isUsuario;
     private String email;
+    @NotEmpty
     private String ativo;
+    @NotEmpty
     private String numero;
     private Integer roleId;
+    @PositiveOrZero
     private Double salario;
     private FileName file;
 
-    public ColaboradorDto(Colaborador colaborador) {
+    public ColaboradorDto(@NotNull Colaborador colaborador) {
         this.dataNascimento = colaborador.getDataNascimento();
         this.dataContratoInicial = colaborador.getDataContratoInicial();
         this.dataContratoFinal = colaborador.getDataContratoFinal();

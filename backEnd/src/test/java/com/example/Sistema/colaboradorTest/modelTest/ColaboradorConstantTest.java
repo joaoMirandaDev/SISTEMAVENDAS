@@ -7,16 +7,17 @@ import java.util.Date;
 
 public class ColaboradorConstantTest {
 
-   private static Colaborador colaborador = new Colaborador(null, "JOAO", "SOUZA", new Date(),null,null,
-            "MASCULINO", "79722490672", "19517206", "35053060", "AV.DO CANAL", "ALTINOPOLIS", "GOVERNADOR VALADARES",
-            "MG", 0 ,"33999471753", "joao@test.com", "505", null, null);
 
-    public static final ColaboradorDto COLABORADOR = new ColaboradorDto(colaborador);
+    public static final ColaboradorDto COLABORADOR = new ColaboradorDto(null, "JOAO", "SOUZA"
+            ,new Date(), new Date(), null, "MASCULINO", "13226726609", "19517206",
+            "35053060", "AVENIDA DO CANAL", "ALTINOPOLIS", "GV", "MG", "339994717553",
+            0, "JOAO@TESTE.COM", "ATIVO", "341", null, 1750.00, null);
 
     public static final ColaboradorDto COLABORADOR_IS_EMPTY = new ColaboradorDto();
 
-    public static final Colaborador INVALID_COLABORADOR = new Colaborador(null, "", "", new Date(),null,null,
-            "", "", "", "", "", "", "",
-            "", 0 ,"", "", "", null, null);
+    public static final ColaboradorDto INVALID_COLABORADOR = new ColaboradorDto(null, "", "SOUZA"
+            ,new Date(), new Date(), null, "MASCULINO", "13226726609", "19517206",
+            "35053060", "AVENIDA DO CANAL", "ALTINOPOLIS", "GV", "MG", "339994717553",
+            0, "JOAO@TESTE.COM", "ATIVO", "341", null, 1750.00, null);
 
 }

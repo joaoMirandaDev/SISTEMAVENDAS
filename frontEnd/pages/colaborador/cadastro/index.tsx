@@ -1,5 +1,5 @@
 import CadastroCpf from '@components/pages/colaborador/cadastro/cpf'
-import { Card, Divider, Title } from '@mantine/core'
+import { Card, Text } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -9,11 +9,10 @@ export default function ColaboradorCadastro() {
 
   return (
     <>
-      <Card>
-        <Title fw={700} size="xl">
-          {t('pages.colaborador.title')}
-        </Title>
-        <Divider my="md" />
+      <Text fz={'1.5rem'} m={'1rem'} fw={'bold'}>
+        {t('pages.colaborador.cadastro.title')}
+      </Text>
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
         {<CadastroCpf />}
       </Card>
     </>

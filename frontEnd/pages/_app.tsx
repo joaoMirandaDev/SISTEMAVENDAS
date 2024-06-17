@@ -119,6 +119,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
       <ThemedLayoutV2
         initialSiderCollapsed={false}
         Header={() => <Header />}
+        dashboard={true}
         Sider={() => <Menu />}
         Title={({ collapsed }) => (
           <ThemedTitleV2 collapsed={collapsed} text="SISTEMA" />
@@ -263,6 +264,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
                 options={{
                   syncWithLocation: true,
                   warnWhenUnsavedChanges: true,
+                  useNewQueryKeys: true,
                 }}
               >
                 {renderComponent()}

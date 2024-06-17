@@ -34,6 +34,7 @@ import {
   formatarCPFCNPJ,
   formatarTelefone,
 } from 'src/utils/FormatterUtils'
+import { FIND_ALL_BY_PAGE_COLABORADOR } from 'src/utils/Routes'
 
 interface IColaboradorProps {
   id: string
@@ -146,7 +147,7 @@ export default function ColaboradorList() {
   }
 
   const findAllColaborador = async () => {
-    const value = await api.post('/api/colaborador/list', filtro)
+    const value = await api.post(FIND_ALL_BY_PAGE_COLABORADOR, filtro)
     value.data.content.map((value: { cpf: string; telefone: string }) => {
       value.cpf = formatarCPFCNPJ(value.cpf)
       value.telefone = formatarTelefone(value.telefone)
@@ -186,7 +187,7 @@ export default function ColaboradorList() {
     () => [
       {
         accessorKey: 'nome',
-        header: t('pages.colaborador.table.nome'),
+        header: t('pages.colaborador.components.table.nome'),
         enableSorting: true,
         enableColumnFilter: true,
         size: 15,
@@ -201,7 +202,7 @@ export default function ColaboradorList() {
       },
       {
         accessorKey: 'sobrenome',
-        header: 'Sobrenome',
+        header: t('pages.colaborador.components.table.sobrenome'),
         enableSorting: true,
         enableColumnFilter: true,
         size: 15,
@@ -216,7 +217,7 @@ export default function ColaboradorList() {
       },
       {
         accessorKey: 'cpf',
-        header: t('pages.colaborador.table.cpf'),
+        header: t('pages.colaborador.components.table.cpf'),
         enableSorting: true,
         enableColumnFilter: true,
         size: 15,
@@ -231,7 +232,7 @@ export default function ColaboradorList() {
       },
       {
         accessorKey: 'estado',
-        header: 'Estado',
+        header: t('pages.colaborador.components.table.estado'),
         enableSorting: true,
         filterVariant: 'select',
         enableColumnFilter: true,
@@ -247,7 +248,7 @@ export default function ColaboradorList() {
       },
       {
         accessorKey: 'cidade',
-        header: 'Cidade',
+        header: t('pages.colaborador.components.table.cidade'),
         enableSorting: true,
         enableColumnFilter: true,
         size: 15,
@@ -262,7 +263,7 @@ export default function ColaboradorList() {
       },
       {
         accessorKey: 'ativo',
-        header: 'Ativo',
+        header: t('pages.colaborador.components.table.ativo'),
         filterVariant: 'select',
         enableSorting: true,
         enableColumnFilter: true,
@@ -311,19 +312,28 @@ export default function ColaboradorList() {
             </Text>
           </Box>
         </Box>
-        <Divider size="sm" orientation="vertical" />
+        <Divider size="xs" orientation="vertical" />
         <Flex direction={'column'} w={'50%'}>
           <Text align="center" fw={'bold'}>
-            Dados Pessoais
+            {t('pages.colaborador.components.detailTable.dadosPessoais.title')}
           </Text>
-          <Divider size="sm" mb={'0.5rem'} />
+          <Divider size="xs" mb={'0.5rem'} />
           <Flex align={'start'} direction={'column'} ml={'1rem'}>
             <Group>
-              <Text fw={'bold'}>Cpf:</Text>
+              <Text fw={'bold'}>
+                {' '}
+                {t(
+                  'pages.colaborador.components.detailTable.dadosPessoais.cpf'
+                )}
+              </Text>
               <Text>{row.original.cpf}</Text>
             </Group>
             <Group>
-              <Text fw={'bold'}>Data nascimento:</Text>
+              <Text fw={'bold'}>
+                {t(
+                  'pages.colaborador.components.detailTable.dadosPessoais.dataNascimento'
+                )}
+              </Text>
               <Text>
                 {row.original.dataNascimento
                   ? row.original.dataNascimento
@@ -331,7 +341,11 @@ export default function ColaboradorList() {
               </Text>
             </Group>
             <Group>
-              <Text fw={'bold'}>Data da contratação:</Text>
+              <Text fw={'bold'}>
+                {t(
+                  'pages.colaborador.components.detailTable.dadosPessoais.dataContratacao'
+                )}
+              </Text>
               <Text>
                 {row.original.dataContratoInicial
                   ? row.original.dataContratoInicial
@@ -339,7 +353,11 @@ export default function ColaboradorList() {
               </Text>
             </Group>
             <Group>
-              <Text fw={'bold'}>Data de demissão:</Text>
+              <Text fw={'bold'}>
+                {t(
+                  'pages.colaborador.components.detailTable.dadosPessoais.dataDemissao'
+                )}
+              </Text>
               <Text>
                 {row.original.dataContratoFinal
                   ? row.original.dataContratoFinal
@@ -347,13 +365,21 @@ export default function ColaboradorList() {
               </Text>
             </Group>
             <Group>
-              <Text fw={'bold'}>Status:</Text>
+              <Text fw={'bold'}>
+                {t(
+                  'pages.colaborador.components.detailTable.dadosPessoais.ativo'
+                )}
+              </Text>
               <Text>{row.original.ativo ? row.original.ativo : '-'}</Text>
             </Group>
             {(Cookies.get('role') == 'ADMIN' ||
               Cookies.get('role') == 'PROPRIETARIO') && (
               <Group>
-                <Text fw={'bold'}>Sálario:</Text>
+                <Text fw={'bold'}>
+                  {t(
+                    'pages.colaborador.components.detailTable.dadosPessoais.salario'
+                  )}
+                </Text>
                 <Text>
                   {row.original.salario
                     ? row.original.salario.toLocaleString('pt-BR', {
@@ -366,19 +392,23 @@ export default function ColaboradorList() {
             )}
           </Flex>
         </Flex>
-        <Divider size="sm" orientation="vertical" />
+        <Divider size="xs" orientation="vertical" />
         <Flex direction={'column'} w={'50%'}>
           <Text fw={'bold'} align="center">
-            Endereço
+            {t('pages.colaborador.components.detailTable.endereco.title')}
           </Text>
-          <Divider size="sm" mb={'0.5rem'} />
+          <Divider size="xs" mb={'0.5rem'} />
           <Flex align={'start'} direction={'column'} ml={'1rem'}>
             <Flex>
-              <Text fw={'bold'}>Cidade:</Text>
+              <Text fw={'bold'}>
+                {t('pages.colaborador.components.detailTable.endereco.cidade')}
+              </Text>
               <Text ml={'0.5rem'}>{row.original.cidade}</Text>
             </Flex>
             <Flex>
-              <Text fw={'bold'}>Bairro:</Text>
+              <Text fw={'bold'}>
+                {t('pages.colaborador.components.detailTable.endereco.bairro')}
+              </Text>
               <Text ml={'0.5rem'}>
                 {row.original.bairro ? row.original.bairro : '-'}
               </Text>
@@ -390,26 +420,40 @@ export default function ColaboradorList() {
               </Text>
             </Flex>
             <Flex>
-              <Text fw={'bold'}>Cep:</Text>
+              <Text fw={'bold'}>
+                {t('pages.colaborador.components.detailTable.endereco.numero')}
+              </Text>
+              <Text ml={'0.5rem'}>
+                {row.original.numero ? row.original.numero : '-'}
+              </Text>
+            </Flex>
+            <Flex>
+              <Text fw={'bold'}>
+                {t('pages.colaborador.components.detailTable.endereco.cep')}
+              </Text>
               <Text ml={'0.5rem'}>
                 {row.original.cep ? formataCep(row.original.cep) : '-'}
               </Text>
             </Flex>
           </Flex>
         </Flex>
-        <Divider size="sm" orientation="vertical" />
+        <Divider size="xs" orientation="vertical" />
         <Flex direction={'column'} w={'50%'}>
           <Text fw={'bold'} align="center">
-            Contato
+            {t('pages.colaborador.components.detailTable.contato.title')}
           </Text>
-          <Divider size="sm" mb={'0.5rem'} />
+          <Divider size="xs" mb={'0.5rem'} />
           <Flex align={'start'} direction={'column'} ml={'1rem'}>
             <Flex>
-              <Text fw={'bold'}>E-mail:</Text>
+              <Text fw={'bold'}>
+                {t('pages.colaborador.components.detailTable.contato.email')}
+              </Text>
               <Text ml={'0.5rem'}>{row.original.email}</Text>
             </Flex>
             <Flex>
-              <Text fw={'bold'}>Telefone:</Text>
+              <Text fw={'bold'}>
+                {t('pages.colaborador.components.detailTable.contato.telefone')}
+              </Text>
               <Text ml={'0.5rem'}>
                 {row.original.telefone
                   ? formatarTelefone(row.original.telefone)
@@ -453,9 +497,9 @@ export default function ColaboradorList() {
 
   return (
     <>
-      <Flex justify={'space-between'} align={'center'} m={10}>
+      <Flex justify={'space-between'} align={'center'} m={'1rem'}>
         <Text fz={'1.5rem'} fw={'bold'}>
-          Listagem de colaboradores
+          {t('pages.colaborador.titleListagem')}
         </Text>
         <Button
           disabled={validatePermissionRole()}

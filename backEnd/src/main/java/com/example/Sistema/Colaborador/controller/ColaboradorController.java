@@ -48,8 +48,8 @@ public class ColaboradorController {
 
     @PostMapping(value = "/list", produces = "application/json")
     @Operation(summary = "Paginação de colaborador", description = "Metodo utilizado para buscar os colaboradores paginados", tags = "Colaborador")
-    public Page<ColaboradorDto> findAllByPage(@RequestBody FilterColaborador filtro) {
-        return colaboradorService.findAllByPage(filtro);
+    public ResponseEntity<Page<ColaboradorDto>> findAllByPage(@Valid @RequestBody FilterColaborador filtro) {
+        return ResponseEntity.ok(colaboradorService.findAllByPage(filtro));
     }
 
 //    @PutMapping(value = "/editar", produces = "application/json")

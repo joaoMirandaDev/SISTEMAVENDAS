@@ -116,10 +116,6 @@ public class DocumentosService {
 
                 String name = multipartFile.getOriginalFilename();
 
-                if (!name.endsWith(".png") ) {
-                    throw new Exception("Insira uma imagem PNG");
-                }
-
                 FileName file = new FileName();
 
                 file.setName(name);

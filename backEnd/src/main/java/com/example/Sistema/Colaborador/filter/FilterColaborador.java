@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilterColaborador {
+    @NotEmpty
     private String id;
     private boolean desc;
     private Integer tamanhoPagina = 10;
@@ -22,4 +23,18 @@ public class FilterColaborador {
     private Integer ativo;
 
 
+    public FilterColaborador(String id, boolean desc, int tamanhoPagina, int pagina) {
+        this.id = id;
+        this.desc = desc;
+        this.tamanhoPagina = tamanhoPagina;
+        this.pagina = pagina;
+    }
+
+    public FilterColaborador(String id, boolean desc, int tamanhoPagina, int pagina, String nome) {
+        this.id = id;
+        this.desc = desc;
+        this.tamanhoPagina = tamanhoPagina;
+        this.pagina = pagina;
+        this.nome = nome;
+    }
 }
