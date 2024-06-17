@@ -47,7 +47,7 @@ const validaColaborador = () => {
     email: z
       .string()
       .nonempty({ message: t('components.error.requiredField') })
-      .email()
+      .email({ message: t('components.error.emailInvalid') })
       .transform(val => val.split('@')[1]),
     senha: z
       .string()

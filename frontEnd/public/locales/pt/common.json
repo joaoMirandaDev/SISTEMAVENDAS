@@ -3,7 +3,8 @@
     "error": {
       "requiredField": "Campo obrigatório",
       "cpfField": "CPF inválido",
-      "cepInvalid": "CEP inválido"
+      "cepInvalid": "CEP inválido",
+      "emailInvalid": "E-mail inválido"
     },
     "photo": "Insira uma foto",
     "button": {

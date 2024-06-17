@@ -98,7 +98,12 @@ export default function CadastroCpf() {
   })
   const buscarDadosCep = async (value: string) => {
     const dados = await api.get(`/api/endereco/findByRegiao/${value}`)
-    console.log(dados)
+    handleChange(dados.data.estado, 'estado')
+    handleChange(dados.data.bairro, 'bairro')
+    handleChange(dados.data.localidade, 'cidade')
+    handleChange(dados.data.logradouro, 'rua')
+    handleChange(dados.data.uf, 'estado')
+    console.log(form.values)
   }
   const handleCheck = (val: boolean) => {
     setChecked(val)
@@ -164,368 +169,385 @@ export default function CadastroCpf() {
     form.setFieldValue('file.key', '')
   }
 
-  const renderDadosPessoais = () => (
-    <Flex mt={'0.5rem'} direction={'column'}>
-      <Flex direction={'column'} align={'center'}>
-        <Image
-          radius={20}
-          width={100}
-          height={100}
-          src={photo}
-          alt=""
-          withPlaceholder
-          placeholder={<Text align="center">{t('components.photo')}</Text>}
-          className="ounded-full"
-        />
-        <Flex mt={'0.5rem'}>
-          <FileButton
-            resetRef={resetRef}
-            onChange={file => uploadPhoto(file!)}
-            accept="image/png,image/jpeg"
-          >
-            {props => (
-              <ActionIcon color="blue" {...props}>
-                {<IconUpload />}
+  const renderDadosPessoais = () => {
+    return (
+      <Flex mt={'0.5rem'} direction={'column'}>
+        <Flex direction={'column'} align={'center'}>
+          <Image
+            radius={20}
+            width={100}
+            height={100}
+            src={photo}
+            alt=""
+            withPlaceholder
+            placeholder={<Text align="center">{t('components.photo')}</Text>}
+            className="ounded-full"
+          />
+          <Flex mt={'0.5rem'}>
+            <FileButton
+              resetRef={resetRef}
+              onChange={file => uploadPhoto(file!)}
+              accept="image/png,image/jpeg"
+            >
+              {props => (
+                <ActionIcon color="blue" {...props}>
+                  {<IconUpload />}
+                </ActionIcon>
+              )}
+            </FileButton>
+            {photo && (
+              <ActionIcon onClick={() => resetImage()} color="red">
+                {<IconTrash />}
               </ActionIcon>
             )}
-          </FileButton>
-          {photo && (
-            <ActionIcon onClick={() => resetImage()} color="red">
-              {<IconTrash />}
-            </ActionIcon>
-          )}
+          </Flex>
         </Flex>
-      </Flex>
-      <Text fw={700}>
-        {t('pages.colaborador.cadastro.dadosPessoais.title')}
-      </Text>
-      <Group align={'center'}>
-        <TextInput
-          {...form.getInputProps('nome')}
-          value={form.values.nome}
-          withAsterisk
-          size="xs"
-          required
-          w={250}
-          onChange={event => handleChange(event.target.value, 'nome')}
-          label={t('pages.colaborador.cadastro.dadosPessoais.nome')}
-          placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputNome')}
-        />
-
-        <TextInput
-          withAsterisk
-          required
-          size="xs"
-          defaultValue={form.values?.sobrenome}
-          w={250}
-          label={t('pages.colaborador.cadastro.dadosPessoais.sobrenome')}
-          onChange={event => handleChange(event.target.value, 'sobrenome')}
-          placeholder={t(
-            'pages.colaborador.cadastro.dadosPessoais.inputSobrenome'
-          )}
-        />
-
-        <Select
-          required
-          size={'xs'}
-          label={t('pages.colaborador.cadastro.dadosPessoais.sexo')}
-          placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputSexo')}
-          data={[
-            { value: 'Masculino', label: 'Masculino' },
-            { value: 'Feminino', label: 'Feminino' },
-          ]}
-          value="1"
-        />
-
-        <TextInput
-          withAsterisk
-          required
-          size="xs"
-          defaultValue={form.values?.sexo || ''}
-          w={250}
-          label={t('pages.colaborador.cadastro.dadosPessoais.sobrenome')}
-          onChange={event => handleChange(event.target.value, 'sobrenome')}
-          placeholder={t(
-            'pages.colaborador.cadastro.dadosPessoais.inputSobrenome'
-          )}
-        />
-
-        <TextInput
-          withAsterisk
-          required
-          size="xs"
-          value={formatarCPFCNPJ(form.values?.cpf || '')}
-          w={250}
-          onChange={event =>
-            handleChange(removeformatarCPFCNPJ(event.target.value), 'cpf')
-          }
-          label={t('pages.colaborador.cadastro.dadosPessoais.cpf')}
-          placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputCpf')}
-        />
-
-        <TextInput
-          withAsterisk
-          w={250}
-          required
-          size="xs"
-          onChange={event => handleChange(event.target.value, 'rg')}
-          defaultValue={form.values?.rg || ''}
-          label={t('pages.colaborador.cadastro.dadosPessoais.rg')}
-          placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputRg')}
-        />
-        <DatesProvider
-          settings={{
-            locale: 'pt-br',
-          }}
-        >
-          <DatePickerInput
-            // value={data.dataInicial}
-            withAsterisk={false}
+        <Text fw={700}>
+          {t('pages.colaborador.cadastro.dadosPessoais.title')}
+        </Text>
+        <Group align={'center'}>
+          <TextInput
+            {...form.getInputProps('nome')}
+            value={form.values.nome}
+            withAsterisk
             size="xs"
-            required
-            clearable
-            onChange={val => handleChange(val, 'dataInicial')}
-            label={t(
-              'pages.colaborador.cadastro.dadosPessoais.dataContratacao'
-            )}
+            w={250}
+            onChange={event => handleChange(event.target.value, 'nome')}
+            label={t('pages.colaborador.cadastro.dadosPessoais.nome')}
             placeholder={t(
-              'pages.colaborador.cadastro.dadosPessoais.inputDataContratacao'
+              'pages.colaborador.cadastro.dadosPessoais.inputNome'
             )}
-            maxDate={new Date()}
-            w={'15.625rem'}
           />
-          <DatePickerInput
-            // value={data.dataFinal}
-            onChange={val => handleChange(val, 'dataFinal')}
-            withAsterisk={false}
-            clearable
-            required
-            w={'15.625rem'}
+
+          <TextInput
+            withAsterisk
+            {...form.getInputProps('sobrenome')}
             size="xs"
-            label={t('pages.colaborador.cadastro.dadosPessoais.dataNascimento')}
+            defaultValue={form.values?.sobrenome}
+            w={250}
+            label={t('pages.colaborador.cadastro.dadosPessoais.sobrenome')}
+            onChange={event => handleChange(event.target.value, 'sobrenome')}
             placeholder={t(
-              'pages.colaborador.cadastro.dadosPessoais.inputDataNascimento'
+              'pages.colaborador.cadastro.dadosPessoais.inputSobrenome'
             )}
-            maxDate={new Date()}
           />
-        </DatesProvider>
-      </Group>
-    </Flex>
-  )
 
-  const renderDadosEndereco = () => (
-    <>
-      <Title fw={700} mt={20} size="md">
-        {t('pages.colaborador.cadastro.endereco.title')}
-      </Title>
-      <Group align={'center'}>
-        <TextInput
-          required
-          withAsterisk
-          size="xs"
-          w={250}
-          defaultValue={form.values?.cep || ''}
-          onBlur={e => {
-            buscarDadosCep(e.target.value || '')
-          }}
-          label={t('pages.colaborador.cadastro.endereco.endereco.cep')}
-          placeholder={t(
-            'pages.colaborador.cadastro.endereco.endereco.inputCep'
-          )}
-        />
+          <Select
+            {...form.getInputProps('sexo')}
+            size={'xs'}
+            label={t('pages.colaborador.cadastro.dadosPessoais.sexo')}
+            placeholder={t(
+              'pages.colaborador.cadastro.dadosPessoais.inputSexo'
+            )}
+            data={[
+              { value: 'Masculino', label: 'Masculino' },
+              { value: 'Feminino', label: 'Feminino' },
+            ]}
+            value="1"
+          />
 
-        <TextInput
-          withAsterisk
-          required
-          size="xs"
-          w={250}
-          defaultValue={form.values?.cidade || ''}
-          onChange={event => handleChange(event.target.value, 'cidade')}
-          label={t('pages.colaborador.cadastro.endereco.endereco.cidade')}
-          placeholder={t(
-            'pages.colaborador.cadastro.endereco.endereco.inputCidade'
-          )}
-        />
+          <TextInput
+            withAsterisk
+            size="xs"
+            {...form.getInputProps('sobrenome')}
+            defaultValue={form.values?.sobrenome}
+            w={250}
+            label={t('pages.colaborador.cadastro.dadosPessoais.sobrenome')}
+            onChange={event => handleChange(event.target.value, 'sobrenome')}
+            placeholder={t(
+              'pages.colaborador.cadastro.dadosPessoais.inputSobrenome'
+            )}
+          />
 
-        <TextInput
-          withAsterisk
-          required
-          w={250}
-          size="xs"
-          defaultValue={form.values?.estado || ''}
-          onChange={event => handleChange(event.target.value, 'estado')}
-          label={t('pages.colaborador.cadastro.endereco.endereco.estado')}
-          placeholder={t(
-            'pages.colaborador.cadastro.endereco.endereco.inputEstado'
-          )}
-        />
+          <TextInput
+            withAsterisk
+            size="xs"
+            {...form.getInputProps('cpf')}
+            value={formatarCPFCNPJ(form.values?.cpf)}
+            w={250}
+            onChange={event =>
+              handleChange(removeformatarCPFCNPJ(event.target.value), 'cpf')
+            }
+            label={t('pages.colaborador.cadastro.dadosPessoais.cpf')}
+            placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputCpf')}
+          />
 
-        <TextInput
-          withAsterisk
-          w={250}
-          required
-          size="xs"
-          defaultValue={form.values?.bairro || ''}
-          onChange={event => handleChange(event.target.value, 'bairro')}
-          label={t('pages.colaborador.cadastro.endereco.endereco.bairro')}
-          placeholder={t(
-            'pages.colaborador.cadastro.endereco.endereco.inputBairro'
-          )}
-        />
-
-        <TextInput
-          withAsterisk
-          size="xs"
-          w={250}
-          required
-          onChange={event => handleChange(event.target.value, 'rua')}
-          defaultValue={form.values?.rua || ''}
-          label={t('pages.colaborador.cadastro.endereco.endereco.rua')}
-          placeholder={t(
-            'pages.colaborador.cadastro.endereco.endereco.inputRua'
-          )}
-        />
-
-        <TextInput
-          withAsterisk
-          required
-          w={250}
-          size="xs"
-          defaultValue={form.values?.numero || ''}
-          onChange={event => handleChange(event.target.value, 'numero')}
-          label={t('pages.colaborador.cadastro.endereco.endereco.numero')}
-          placeholder={t(
-            'pages.colaborador.cadastro.endereco.endereco.inputNumero'
-          )}
-        />
-      </Group>
-    </>
-  )
-
-  const renderContatos = () => (
-    <>
-      <Text fw={700} mt={20} size="md">
-        {t('pages.colaborador.cadastro.contatos.title')}
-      </Text>
-      <Group>
-        <TextInput
-          withAsterisk
-          w={250}
-          size="xs"
-          value={formatarTelefone(form.values?.telefone || '') || ''}
-          onChange={event =>
-            handleChange(
-              removeformatacaoTelefone(event.target.value),
-              'telefone'
-            )
-          }
-          label={t('pages.colaborador.cadastro.contatos.contato.telefone')}
-          placeholder={t(
-            'pages.colaborador.cadastro.contatos.contato.inputTelefone'
-          )}
-        />
-        <TextInput
-          withAsterisk
-          w={250}
-          size="xs"
-          value={formatarTelefone(form.values?.email || '') || ''}
-          onChange={event =>
-            handleChange(
-              removeformatacaoTelefone(event.target.value),
-              'telefone'
-            )
-          }
-          label={t('pages.colaborador.cadastro.contatos.contato.email')}
-          placeholder={t(
-            'pages.colaborador.cadastro.contatos.contato.inputTelefone'
-          )}
-        />
-      </Group>
-    </>
-  )
-
-  const renderDadosAdministrativos = () => (
-    <>
-      <Text fw={700} mt={'0.5rem'} size="md">
-        {t('pages.colaborador.cadastro.administrativo.salario')}
-      </Text>
-      <Group>
-        <NumberInput
-          withAsterisk
-          hideControls
-          min={0}
-          w={250}
-          size="xs"
-          precision={2}
-          decimalSeparator=","
-          thousandsSeparator="."
-          value={form.values?.salario}
-          onChange={event => handleChange(event, 'salario')}
-          label={t('pages.colaborador.cadastro.administrativo.salario')}
-          placeholder={t(
-            'pages.colaborador.cadastro.administrativo.inputSalario'
-          )}
-        />
-      </Group>
-    </>
-  )
-
-  const renderUsuario = () => (
-    <>
-      <Checkbox
-        checked={checked}
-        mt={'0.5rem'}
-        onChange={event => handleCheck(event.currentTarget.checked)}
-        label={t('pages.colaborador.cadastro.usuario.check')}
-      />
-      {checked && (
-        <>
-          <Text fw={700} mt={'0.5rem'} size="md">
-            {t('pages.colaborador.cadastro.usuario.title')}
-          </Text>
-          <Group>
-            <PasswordInput
-              withAsterisk
-              w={250}
+          <TextInput
+            withAsterisk
+            w={250}
+            {...form.getInputProps('rg')}
+            size="xs"
+            onChange={event => handleChange(event.target.value, 'rg')}
+            defaultValue={form.values?.rg || ''}
+            label={t('pages.colaborador.cadastro.dadosPessoais.rg')}
+            placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputRg')}
+          />
+          <DatesProvider
+            settings={{
+              locale: 'pt-br',
+            }}
+          >
+            <DatePickerInput
+              value={form.values.dataContratoInicial}
+              {...form.getInputProps('dataContratoInicial')}
+              withAsterisk={false}
               size="xs"
-              value={form.values?.senha}
-              onChange={event => handleChange(event.target.value, 'senha')}
-              label={t('pages.colaborador.cadastro.usuario.senha')}
-              placeholder={t('pages.colaborador.cadastro.usuario.inputSenha')}
+              clearable
+              onChange={val => handleChange(val, 'dataInicial')}
+              label={t(
+                'pages.colaborador.cadastro.dadosPessoais.dataContratacao'
+              )}
+              placeholder={t(
+                'pages.colaborador.cadastro.dadosPessoais.inputDataContratacao'
+              )}
+              maxDate={new Date()}
+              w={'15.625rem'}
             />
-
-            <Select
-              withAsterisk
-              w={220}
-              label={t('pages.colaborador.cadastro.usuario.perfil')}
-              placeholder={t('pages.colaborador.cadastro.usuario.inputPerfil')}
-              onChange={event => handleChange(event, 'role')}
-              withinPortal
+            <DatePickerInput
+              value={form.values.dataNascimento}
+              {...form.getInputProps('dataNascimento')}
+              onChange={val => handleChange(val, 'dataNascimento')}
+              withAsterisk={false}
+              clearable
+              w={'15.625rem'}
               size="xs"
-              data={role}
+              label={t(
+                'pages.colaborador.cadastro.dadosPessoais.dataNascimento'
+              )}
+              placeholder={t(
+                'pages.colaborador.cadastro.dadosPessoais.inputDataNascimento'
+              )}
+              maxDate={new Date()}
             />
-          </Group>
-        </>
-      )}
-    </>
-  )
-
-  const renderButtons = () => (
-    <>
-      <Flex mt={20} bottom={0} pos={'relative'} justify={'space-between'}>
-        <Button
-          leftIcon={<IconCircleXFilled />}
-          color="red"
-          onClick={() => navigate.push('/colaborador')}
-        >
-          {t('components.button.cancelar')}
-        </Button>
-        <Button leftIcon={<IconDatabasePlus />} type="submit" color="green">
-          {t('components.button.salvar')}
-        </Button>
+          </DatesProvider>
+        </Group>
       </Flex>
-    </>
-  )
+    )
+  }
+
+  const renderDadosEndereco = () => {
+    return (
+      <>
+        <Title fw={700} mt={20} size="md">
+          {t('pages.colaborador.cadastro.endereco.title')}
+        </Title>
+        <Group align={'center'}>
+          <TextInput
+            withAsterisk
+            size="xs"
+            w={250}
+            {...form.getInputProps('cep')}
+            defaultValue={form.values?.cep}
+            onBlur={e => {
+              buscarDadosCep(e.target.value || '')
+            }}
+            label={t('pages.colaborador.cadastro.endereco.endereco.cep')}
+            placeholder={t(
+              'pages.colaborador.cadastro.endereco.endereco.inputCep'
+            )}
+          />
+
+          <TextInput
+            withAsterisk
+            size="xs"
+            w={250}
+            {...form.getInputProps('cidade')}
+            defaultValue={form.values?.cidade}
+            onChange={event => handleChange(event.target.value, 'cidade')}
+            label={t('pages.colaborador.cadastro.endereco.endereco.cidade')}
+            placeholder={t(
+              'pages.colaborador.cadastro.endereco.endereco.inputCidade'
+            )}
+          />
+
+          <TextInput
+            withAsterisk
+            w={250}
+            size="xs"
+            {...form.getInputProps('estado')}
+            defaultValue={form.values?.estado}
+            onChange={event => handleChange(event.target.value, 'estado')}
+            label={t('pages.colaborador.cadastro.endereco.endereco.estado')}
+            placeholder={t(
+              'pages.colaborador.cadastro.endereco.endereco.inputEstado'
+            )}
+          />
+
+          <TextInput
+            withAsterisk
+            w={250}
+            size="xs"
+            {...form.getInputProps('bairro')}
+            defaultValue={form.values?.bairro}
+            onChange={event => handleChange(event.target.value, 'bairro')}
+            label={t('pages.colaborador.cadastro.endereco.endereco.bairro')}
+            placeholder={t(
+              'pages.colaborador.cadastro.endereco.endereco.inputBairro'
+            )}
+          />
+
+          <TextInput
+            withAsterisk
+            size="xs"
+            w={250}
+            {...form.getInputProps('rua')}
+            onChange={event => handleChange(event.target.value, 'rua')}
+            defaultValue={form.values?.rua}
+            label={t('pages.colaborador.cadastro.endereco.endereco.rua')}
+            placeholder={t(
+              'pages.colaborador.cadastro.endereco.endereco.inputRua'
+            )}
+          />
+
+          <TextInput
+            withAsterisk
+            w={250}
+            size="xs"
+            {...form.getInputProps('numero')}
+            defaultValue={form.values?.numero}
+            onChange={event => handleChange(event.target.value, 'numero')}
+            label={t('pages.colaborador.cadastro.endereco.endereco.numero')}
+            placeholder={t(
+              'pages.colaborador.cadastro.endereco.endereco.inputNumero'
+            )}
+          />
+        </Group>
+      </>
+    )
+  }
+
+  const renderContatos = () => {
+    return (
+      <>
+        <Text fw={700} mt={20} size="md">
+          {t('pages.colaborador.cadastro.contatos.title')}
+        </Text>
+        <Group>
+          <TextInput
+            withAsterisk
+            w={250}
+            {...form.getInputProps('telefone')}
+            size="xs"
+            value={formatarTelefone(form.values?.telefone || '') || ''}
+            onChange={event =>
+              handleChange(
+                removeformatacaoTelefone(event.target.value),
+                'telefone'
+              )
+            }
+            label={t('pages.colaborador.cadastro.contatos.contato.telefone')}
+            placeholder={t(
+              'pages.colaborador.cadastro.contatos.contato.inputTelefone'
+            )}
+          />
+          <TextInput
+            withAsterisk
+            w={250}
+            size="xs"
+            {...form.getInputProps('email')}
+            value={formatarTelefone(form.values?.email)}
+            onChange={event => handleChange(event.target.value, 'email')}
+            label={t('pages.colaborador.cadastro.contatos.contato.email')}
+            placeholder={t(
+              'pages.colaborador.cadastro.contatos.contato.inputEmail'
+            )}
+          />
+        </Group>
+      </>
+    )
+  }
+
+  const renderDadosAdministrativos = () => {
+    return (
+      <>
+        <Text fw={700} mt={'0.5rem'} size="md">
+          {t('pages.colaborador.cadastro.administrativo.salario')}
+        </Text>
+        <Group>
+          <NumberInput
+            withAsterisk
+            hideControls
+            {...form.getInputProps('salario')}
+            min={0}
+            w={250}
+            size="xs"
+            precision={2}
+            decimalSeparator=","
+            thousandsSeparator="."
+            value={form.values?.salario}
+            onChange={event => handleChange(event, 'salario')}
+            label={t('pages.colaborador.cadastro.administrativo.salario')}
+            placeholder={t(
+              'pages.colaborador.cadastro.administrativo.inputSalario'
+            )}
+          />
+        </Group>
+      </>
+    )
+  }
+
+  const renderUsuario = () => {
+    return (
+      <>
+        <Checkbox
+          checked={checked}
+          mt={'0.5rem'}
+          onChange={event => handleCheck(event.currentTarget.checked)}
+          label={t('pages.colaborador.cadastro.usuario.check')}
+        />
+        {checked && (
+          <>
+            <Text fw={700} mt={'0.5rem'} size="md">
+              {t('pages.colaborador.cadastro.usuario.title')}
+            </Text>
+            <Group>
+              <PasswordInput
+                withAsterisk
+                w={250}
+                size="xs"
+                value={form.values?.senha}
+                onChange={event => handleChange(event.target.value, 'senha')}
+                label={t('pages.colaborador.cadastro.usuario.senha')}
+                placeholder={t('pages.colaborador.cadastro.usuario.inputSenha')}
+              />
+
+              <Select
+                withAsterisk
+                w={220}
+                label={t('pages.colaborador.cadastro.usuario.perfil')}
+                placeholder={t(
+                  'pages.colaborador.cadastro.usuario.inputPerfil'
+                )}
+                onChange={event => handleChange(event, 'role')}
+                withinPortal
+                size="xs"
+                data={role}
+              />
+            </Group>
+          </>
+        )}
+      </>
+    )
+  }
+
+  const renderButtons = () => {
+    return (
+      <>
+        <Flex mt={20} bottom={0} pos={'relative'} justify={'space-between'}>
+          <Button
+            leftIcon={<IconCircleXFilled />}
+            color="red"
+            onClick={() => navigate.push('/colaborador')}
+          >
+            {t('components.button.cancelar')}
+          </Button>
+          <Button leftIcon={<IconDatabasePlus />} type="submit" color="green">
+            {t('components.button.salvar')}
+          </Button>
+        </Flex>
+      </>
+    )
+  }
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
