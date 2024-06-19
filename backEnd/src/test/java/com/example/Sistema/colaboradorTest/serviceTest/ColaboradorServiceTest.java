@@ -3,9 +3,12 @@ package com.example.Sistema.colaboradorTest.serviceTest;
 import com.example.Sistema.Autenticacao.config.securityJwt.JwtService;
 import com.example.Sistema.Colaborador.DTO.ColaboradorDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
+import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
 import com.example.Sistema.Colaborador.service.ColaboradorService;
 
+import com.example.Sistema.Utils.Interfaces.LocaleInteface;
+import com.example.Sistema.Utils.exceptions.NotFoundException;
 import com.example.Sistema.Utils.pagination.Pagination;
 import com.example.Sistema.colaboradorTest.modelTest.ColaboradorConstantTest;
 
@@ -15,7 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +28,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static com.example.Sistema.colaboradorTest.modelTest.ColaboradorConstantTest.COLABORADOR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,9 +46,13 @@ public class ColaboradorServiceTest {
     @Mock
     private ColaboradorRepository colaboradorRepository;
 
+    @Mock
+    private  MessageSource messageSource;
+
     @BeforeEach
     public void setUp() {
         colaboradorService = mock(ColaboradorService.class);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -54,20 +65,21 @@ public class ColaboradorServiceTest {
 
     @Test
     public void createColaborador_WithValidData_ReturnsException() throws Exception {
-        Mockito.doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.CREATE_COLABORADOR);
-        Mockito.doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.INVALID_COLABORADOR);
+        doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.COLABORADOR_IS_EMPTY);
+        doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.INVALID_COLABORADOR);
 
-        assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.CREATE_COLABORADOR)).isInstanceOf(RuntimeException.class);
-        assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.INVALID_COLABORADOR)).isInstanceOf(RuntimeException.class);
-
+        assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.COLABORADOR_IS_EMPTY))
+                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.INVALID_COLABORADOR))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    public void Colaborador_WithValidData_ReturnsPage() {
+    public void colaborador_WithValidData_ReturnsPage() {
         FilterColaborador filtro = new FilterColaborador("nome" ,false, 10, 0, "JOAO");
         Pageable pageable = Pagination.createPageableFromFiltro(filtro, "nome");
         List<ColaboradorDto> listContent = Arrays.asList(
-                ColaboradorConstantTest.COLABORADOR
+                COLABORADOR
         );
         Page<ColaboradorDto> pageTest = new PageImpl<>(listContent, pageable, 1);
         Mockito.when(colaboradorService.findAllByPage(filtro)).thenReturn(pageTest);
@@ -80,7 +92,7 @@ public class ColaboradorServiceTest {
     }
 
     @Test
-    public void Colaborador_WithValidData_ReturnsException() {
+    public void colaborador_WithValidData_ReturnsException() {
         FilterColaborador INVALID_FILTRO = new FilterColaborador("" ,false, 10, 0, "JOAO");
         FilterColaborador FILTRO_IS_EMPTY = new FilterColaborador();
 
@@ -89,5 +101,29 @@ public class ColaboradorServiceTest {
 
         assertThatThrownBy(() -> colaboradorService.findAllByPage(INVALID_FILTRO)).isInstanceOf(RuntimeException.class);
         assertThatThrownBy(() -> colaboradorService.findAllByPage(FILTRO_IS_EMPTY)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    public void getColaborador_ByExistingId_ReturnsColaborador() {
+        Colaborador colaboradorMock = new Colaborador();
+        when(colaboradorRepository.findById(1)).thenReturn(Optional.of(colaboradorMock));
+
+        ColaboradorDto expectedDto = new ColaboradorDto(colaboradorMock);
+
+        Colaborador colaborador = colaboradorRepository.findById(1).orElseThrow(() ->
+                new NotFoundException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR))
+        );
+        ColaboradorDto sut = new ColaboradorDto(colaborador);
+
+
+        assertThat(sut).isNotNull();
+        assertThat(sut).isEqualTo(expectedDto);
+    }
+
+    @Test
+    public void getColaborador_ByExistingId_ReturnsThrown() {
+        when(colaboradorService.findById(-1)).thenThrow(NotFoundException.class);
+        assertThatThrownBy(() -> colaboradorService.findById(-1)).isInstanceOf(NotFoundException.class)
+                .hasMessage(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
     }
 }

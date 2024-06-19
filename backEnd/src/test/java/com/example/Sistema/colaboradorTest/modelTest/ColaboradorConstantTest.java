@@ -17,7 +17,7 @@ public class ColaboradorConstantTest {
             "35053060", "AVENIDA DO CANAL", "ALTINOPOLIS", "GV", "MG", "339994717553", "ALMOXARIFE",
             0, "JOAO@TESTE.COM", "ATIVO", "341", null, 1750.00, null);
 
-    public static final ColaboradorDto COLABORADOR_IS_EMPTY = new ColaboradorDto();
+    public static final ColaboradorCreateDto COLABORADOR_IS_EMPTY = new ColaboradorCreateDto();
 
     public static final ColaboradorCreateDto INVALID_COLABORADOR = new ColaboradorCreateDto(null, "", "SOUZA"
             ,null, null, "MASCULINO", "13226726609", "19517206",

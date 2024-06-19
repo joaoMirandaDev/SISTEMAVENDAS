@@ -8,7 +8,6 @@ import {
   Button,
   Divider,
   Flex,
-  Group,
   Text,
   Tooltip,
 } from '@mantine/core'
@@ -99,7 +98,9 @@ export default function ColaboradorList() {
   }, [pagination, filtro])
 
   useEffect(() => {
+    console.log(columnFilters)
     if (columnFilters.length > 0) {
+      resetFiltro()
       columnFilters.forEach(column => {
         switch (column.id) {
           case 'nome':
@@ -142,6 +143,22 @@ export default function ColaboradorList() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
+
+  const resetFiltro = () => {
+    const fill = {
+      nome: '',
+      sobrenome: '',
+      cpf: '',
+      estado: '',
+      cidade: '',
+      ativo: 0,
+      pagina: 0,
+      tamanhoPagina: 10,
+      id: 'nome',
+      desc: false,
+    }
+    setFiltro(fill)
+  }
 
   const filterCliente = (Key: string, value: string | number) => {
     setFiltro(prevData => ({ ...prevData, [Key]: value, pagina: 0 }))
@@ -239,7 +256,7 @@ export default function ColaboradorList() {
               alt="avatar"
               color="blue"
               src={row.original.photo}
-              style={{ borderRadius: '50%' }}
+              style={{ borderRadius: '100%' }}
             />
             <span>{renderedCellValue}</span>
           </Box>
@@ -345,7 +362,7 @@ export default function ColaboradorList() {
         >
           <Avatar
             color="blue"
-            radius="xl"
+            style={{ borderRadius: '100%' }}
             size={150}
             src={row.original.photo?.toString()}
             alt="With default placeholder"
@@ -363,68 +380,69 @@ export default function ColaboradorList() {
           </Text>
           <Divider size="xs" mb={'0.5rem'} />
           <Flex align={'start'} direction={'column'} ml={'1rem'}>
-            <Group>
+            <Flex>
               <Text fw={'bold'}>
-                {' '}
                 {t(
                   'pages.colaborador.components.detailTable.dadosPessoais.cpf'
                 )}
               </Text>
-              <Text>{row.original.cpf}</Text>
-            </Group>
-            <Group>
+              <Text ml={'0.5rem'}>{row.original.cpf}</Text>
+            </Flex>
+            <Flex>
               <Text fw={'bold'}>
                 {t(
                   'pages.colaborador.components.detailTable.dadosPessoais.dataNascimento'
                 )}
               </Text>
-              <Text>
+              <Text ml={'0.5rem'}>
                 {row.original.dataNascimento
                   ? row.original.dataNascimento
                   : '-'}
               </Text>
-            </Group>
-            <Group>
+            </Flex>
+            <Flex>
               <Text fw={'bold'}>
                 {t(
                   'pages.colaborador.components.detailTable.dadosPessoais.dataContratacao'
                 )}
               </Text>
-              <Text>
+              <Text ml={'0.5rem'}>
                 {row.original.dataContratoInicial
                   ? row.original.dataContratoInicial
                   : '-'}
               </Text>
-            </Group>
-            <Group>
+            </Flex>
+            <Flex>
               <Text fw={'bold'}>
                 {t(
                   'pages.colaborador.components.detailTable.dadosPessoais.dataDemissao'
                 )}
               </Text>
-              <Text>
+              <Text ml={'0.5rem'}>
                 {row.original.dataContratoFinal
                   ? row.original.dataContratoFinal
                   : '-'}
               </Text>
-            </Group>
-            <Group>
+            </Flex>
+            <Flex>
               <Text fw={'bold'}>
                 {t(
                   'pages.colaborador.components.detailTable.dadosPessoais.ativo'
                 )}
               </Text>
-              <Text>{row.original.ativo ? row.original.ativo : '-'}</Text>
-            </Group>
+              <Text ml={'0.5rem'}>
+                {row.original.ativo ? row.original.ativo : '-'}
+              </Text>
+            </Flex>
             {(Cookies.get('role') == 'ADMIN' ||
               Cookies.get('role') == 'PROPRIETARIO') && (
-              <Group>
+              <Flex>
                 <Text fw={'bold'}>
                   {t(
                     'pages.colaborador.components.detailTable.dadosPessoais.salario'
                   )}
                 </Text>
-                <Text>
+                <Text ml={'0.5rem'}>
                   {row.original.salario
                     ? row.original.salario.toLocaleString('pt-BR', {
                         style: 'currency',
@@ -432,7 +450,7 @@ export default function ColaboradorList() {
                       })
                     : '-'}
                 </Text>
-              </Group>
+              </Flex>
             )}
           </Flex>
         </Flex>

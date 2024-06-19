@@ -82,7 +82,7 @@ public class ColaboradorDto {
         this.estado = colaborador.getEstado();
         this.telefone = colaborador.getTelefone();
         this.email = colaborador.getEmail();
-        this.ativo = colaborador.getAtivo() == 0 ? "Ativo" : "Inativo";
+        this.ativo = Objects.nonNull(colaborador.getAtivo()) && colaborador.getAtivo().equals(0) ? "Ativo" : "Inativo";
         if (Objects.nonNull(colaborador.getDocumentos())) {
             FileKey fileKey = new FileKey(colaborador.getDocumentos().getNome(), colaborador.getDocumentos().getRoute());
             this.file = fileKey;
