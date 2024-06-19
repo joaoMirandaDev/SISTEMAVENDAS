@@ -98,7 +98,6 @@ export default function ColaboradorList() {
   }, [pagination, filtro])
 
   useEffect(() => {
-    console.log(columnFilters)
     if (columnFilters.length > 0) {
       resetFiltro()
       columnFilters.forEach(column => {
