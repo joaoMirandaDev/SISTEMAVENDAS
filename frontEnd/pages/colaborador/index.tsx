@@ -3,12 +3,12 @@ import PaginationTable from '@components/common/tabela/paginationTable'
 import ModalColaborador from '@components/pages/colaborador/modal'
 import {
   ActionIcon,
+  Avatar,
   Box,
   Button,
   Divider,
   Flex,
   Group,
-  Image,
   Text,
   Tooltip,
 } from '@mantine/core'
@@ -28,6 +28,7 @@ import { useEffect, useMemo, useState } from 'react'
 import IColaborador from 'src/interfaces/colaborador'
 import ISearch from 'src/interfaces/search'
 import api from 'src/utils/Api'
+import { getImage } from 'src/utils/Arquivo'
 import { PAGE_INDEX, PAGE_SIZE } from 'src/utils/Constants'
 import {
   formataCep,
@@ -147,14 +148,40 @@ export default function ColaboradorList() {
   }
 
   const findAllColaborador = async () => {
-    const value = await api.post(FIND_ALL_BY_PAGE_COLABORADOR, filtro)
-    value.data.content.map((value: { cpf: string; telefone: string }) => {
-      value.cpf = formatarCPFCNPJ(value.cpf)
-      value.telefone = formatarTelefone(value.telefone)
-    })
-    setDataCliente(value.data.content)
-    setTotalElements(value.data.totalElements)
+    const response = await api.post(FIND_ALL_BY_PAGE_COLABORADOR, filtro)
+    const colaboradores = response.data.content
+
+    const processedColaboradores = await Promise.all(
+      colaboradores.map(
+        async (colaborador: {
+          file: { key: string }
+          cpf: string
+          telefone: string
+        }) => {
+          let photoUrl = null
+          if (colaborador.file && colaborador.file.key) {
+            photoUrl = await getImage(
+              colaborador.file.key,
+              t('messages.getErrorDatabase')
+            )
+          }
+          const formattedCpf = formatarCPFCNPJ(colaborador.cpf)
+          const formattedTelefone = formatarTelefone(colaborador.telefone)
+
+          return {
+            ...colaborador,
+            photo: photoUrl,
+            cpf: formattedCpf,
+            telefone: formattedTelefone,
+          }
+        }
+      )
+    )
+
+    setDataCliente(processedColaboradores)
+    setTotalElements(response.data.totalElements)
   }
+
   const deleteColaboradorById = async (id: number) => {
     setIdCliente(id)
     setOpenModal(true)
@@ -199,6 +226,24 @@ export default function ColaboradorList() {
         mantineTableHeadCellProps: {
           align: 'center',
         },
+        Cell: ({ renderedCellValue, row }) => (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+            }}
+          >
+            <Avatar
+              size="md"
+              alt="avatar"
+              color="blue"
+              src={row.original.photo}
+              style={{ borderRadius: '50%' }}
+            />
+            <span>{renderedCellValue}</span>
+          </Box>
+        ),
       },
       {
         accessorKey: 'sobrenome',
@@ -298,13 +343,12 @@ export default function ColaboradorList() {
             padding: '16px',
           }}
         >
-          <Image
-            radius="md"
-            width={200}
-            height={120}
-            src={null}
+          <Avatar
+            color="blue"
+            radius="xl"
+            size={150}
+            src={row.original.photo?.toString()}
             alt="With default placeholder"
-            withPlaceholder
           />
           <Box sx={{ textAlign: 'center' }}>
             <Text fw={'bold'}>

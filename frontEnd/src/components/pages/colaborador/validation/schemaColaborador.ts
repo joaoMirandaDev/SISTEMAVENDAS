@@ -9,6 +9,10 @@ const validaColaborador = () => {
       .string()
       .nonempty({ message: t('components.error.requiredField') })
       .toUpperCase(),
+    cargo: z
+      .string()
+      .nonempty({ message: t('components.error.requiredField') })
+      .toUpperCase(),
     sobrenome: z
       .string()
       .nonempty({ message: t('components.error.requiredField') })
@@ -20,11 +24,11 @@ const validaColaborador = () => {
       .max(11, { message: t('components.error.cpfField') }),
     rg: z.string().nonempty({ message: t('components.error.requiredField') }),
     dataNascimento: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
+      .date()
+      .max(new Date(), { message: t('components.error.dateInvalid') }),
     dataContratoInicial: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
+      .date()
+      .max(new Date(), { message: t('components.error.dateInvalid') }),
     cep: z
       .string()
       .nonempty({ message: t('components.error.requiredField') })
@@ -49,9 +53,6 @@ const validaColaborador = () => {
       .nonempty({ message: t('components.error.requiredField') })
       .email({ message: t('components.error.emailInvalid') })
       .transform(val => val.split('@')[1]),
-    senha: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
     numero: z
       .string()
       .nonempty({ message: t('components.error.requiredField') }),

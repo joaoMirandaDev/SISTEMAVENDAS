@@ -77,7 +77,7 @@ public class ColaboradorControllerTest {
     @WithMockUser(roles = {"ADMIN"})
     public void createColaborador_WithValidData_ReturnsCreated() throws Exception {
 
-        Mockito.doNothing().when(colaboradorService).create(ColaboradorConstantTest.COLABORADOR);
+        Mockito.doNothing().when(colaboradorService).create(ColaboradorConstantTest.CREATE_COLABORADOR);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/colaborador/create")
@@ -94,7 +94,7 @@ public class ColaboradorControllerTest {
     @WithMockUser(roles = {"CAIXA"})
     public void createColaborador_WithValidData_ReturnsForbidden() throws Exception {
 
-        Mockito.doNothing().when(colaboradorService).create(ColaboradorConstantTest.COLABORADOR);
+        Mockito.doNothing().when(colaboradorService).create(ColaboradorConstantTest.CREATE_COLABORADOR);
         String value = objectMapper.writeValueAsString(ColaboradorConstantTest.COLABORADOR);
 
         mockMvc.perform(MockMvcRequestBuilders

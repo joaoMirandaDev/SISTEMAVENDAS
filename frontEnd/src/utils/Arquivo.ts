@@ -1,3 +1,10 @@
+import api from 'src/utils/Api'
+import { GET_DOCUMENTOS } from './Routes'
+import { ErrorNotification } from '@components/common'
+interface IFile {
+  key: string
+  name: string
+}
 export const downloadByteArrayAsFile = (
   byteArray: Uint8Array,
   fileName: string
@@ -15,6 +22,26 @@ export const downloadByteArrayAsFile = (
 
   window.URL.revokeObjectURL(url)
   document.body.removeChild(a)
+}
+
+export const getImage = async (val: string, text: string) => {
+  try {
+    const img: IFile = {
+      key: val,
+      name: '',
+    }
+    const response = await api.post(GET_DOCUMENTOS, img, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      responseType: 'blob',
+    })
+    const contentType = response.headers['content-type'] || 'image/png'
+    const blob = new Blob([response.data], { type: contentType })
+    return URL.createObjectURL(blob)
+  } catch (error) {
+    ErrorNotification({ message: text })
+  }
 }
 
 export const openByteArrayNewTab = (

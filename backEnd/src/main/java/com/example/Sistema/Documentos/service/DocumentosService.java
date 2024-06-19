@@ -2,7 +2,7 @@ package com.example.Sistema.Documentos.service;
 
 import com.example.Sistema.Utils.Interfaces.Routes;
 import com.example.Sistema.Documentos.model.Documentos;
-import com.example.Sistema.Documentos.model.FileName;
+import com.example.Sistema.Documentos.model.FileKey;
 import com.example.Sistema.Documentos.repository.DocumentosRepository;
 import com.example.Sistema.Usuario.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class DocumentosService {
     private static DocumentosRepository documentosRepository;
 
     @Autowired
-    public DocumentosService(DocumentosRepository documentosRepository, FileName file, UsuarioRepository usuarioRepository) {
+    public DocumentosService(DocumentosRepository documentosRepository, FileKey file, UsuarioRepository usuarioRepository) {
         DocumentosService.documentosRepository = documentosRepository;
     }
 
@@ -70,7 +70,7 @@ public class DocumentosService {
 //    }
 
     //Salva a imagem na pasta definitiva e retorna o caminho cripto
-    public Documentos save(FileName file) throws Exception {
+    public Documentos save(FileKey file) throws Exception {
         try {
             Documentos documentos = new Documentos();
             // Caminho da pasta de destino
@@ -116,7 +116,7 @@ public class DocumentosService {
 
                 String name = multipartFile.getOriginalFilename();
 
-                FileName file = new FileName();
+                FileKey file = new FileKey();
 
                 file.setName(name);
 
@@ -139,6 +139,7 @@ public class DocumentosService {
             if (resource.exists() && resource.isReadable()) {
                 return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG)
+                    .contentType(MediaType.IMAGE_JPEG)
                     .body(resource);
             }
         } catch (IOException e) {

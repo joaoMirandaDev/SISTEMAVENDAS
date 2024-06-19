@@ -2,6 +2,10 @@ server:
     servlet-path: /api
     port: 1080
 spring:
+  devtools:
+    add-properties: true
+  profiles:
+    active: dev
   main:
     allow-circular-references: true
   datasource:

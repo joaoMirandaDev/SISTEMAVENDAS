@@ -4,14 +4,18 @@
       "requiredField": "Campo obrigatório",
       "cpfField": "CPF inválido",
       "cepInvalid": "CEP inválido",
-      "emailInvalid": "E-mail inválido"
+      "emailInvalid": "E-mail inválido",
+      "dateInvalid": "Data inválida"
     },
     "photo": "Insira uma foto",
     "button": {
-      "logout": "Sair"
+      "logout": "Sair",
+      "salvar": "Salvar",
+      "cancelar": "Cancelar"
     }
   },
   "messages": {
+    "getErrorDatabase": "Error ao buscar dados na base de dados",
     "error": "Error enviar dados"
   },
   "pages": {
@@ -95,8 +99,11 @@
           }
         },
         "administrativo": {
+          "title": "Administrativo",
           "salario": "Sálario:",
-          "inputSalario": "Digite o sálario"
+          "inputSalario": "Digite o sálario",
+          "cargo": "Cargo",
+          "inputCargo": "Digite o cargo"
         },
         "contatos": {
           "title": "Contato",

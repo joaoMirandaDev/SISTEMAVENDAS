@@ -46,18 +46,18 @@ public class ColaboradorServiceTest {
 
     @Test
     public void createColaborador_WithValidData_ReturnsString() throws Exception {
-        Mockito.doNothing().when(colaboradorService).create(ColaboradorConstantTest.COLABORADOR);
-        colaboradorService.create(ColaboradorConstantTest.COLABORADOR);
+        Mockito.doNothing().when(colaboradorService).create(ColaboradorConstantTest.CREATE_COLABORADOR);
+        colaboradorService.create(ColaboradorConstantTest.CREATE_COLABORADOR);
 
-        verify(colaboradorService, times(1)).create(ColaboradorConstantTest.COLABORADOR);
+        verify(colaboradorService, times(1)).create(ColaboradorConstantTest.CREATE_COLABORADOR);
     }
 
     @Test
     public void createColaborador_WithValidData_ReturnsException() throws Exception {
-        Mockito.doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.COLABORADOR);
+        Mockito.doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.CREATE_COLABORADOR);
         Mockito.doThrow(new RuntimeException()).when(colaboradorService).create(ColaboradorConstantTest.INVALID_COLABORADOR);
 
-        assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.COLABORADOR)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.CREATE_COLABORADOR)).isInstanceOf(RuntimeException.class);
         assertThatThrownBy(() -> colaboradorService.create(ColaboradorConstantTest.INVALID_COLABORADOR)).isInstanceOf(RuntimeException.class);
 
     }

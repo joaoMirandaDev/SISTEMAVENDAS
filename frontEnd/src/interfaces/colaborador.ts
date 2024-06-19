@@ -1,4 +1,5 @@
 export default interface IColaborador {
+  avatar: string | undefined
   salario: number
   dataContratoFinal: string
   dataContratoInicial: string
@@ -20,4 +21,9 @@ export default interface IColaborador {
   email?: string
   senha?: string
   role?: number
+  photo?: string
+  file: {
+    name?: string
+    key?: string
+  }
 }

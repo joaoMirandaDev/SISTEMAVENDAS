@@ -1,6 +1,6 @@
 package com.example.Sistema.Documentos.controller;
 
-import com.example.Sistema.Documentos.model.FileName;
+import com.example.Sistema.Documentos.model.FileKey;
 import com.example.Sistema.Documentos.service.DocumentosService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class DocumentosController {
     @CrossOrigin(origins = "http://localhost:8080/")
     @PostMapping("/image")
     @Operation(summary = "Obter imagem", description = "Metodo utilizado para obter fotos", tags = "Arquivos")
-    public ResponseEntity<Resource> getImage(@RequestBody FileName fileName) throws Exception {
-        return documentosService.getImagem(fileName.getKey());
+    public ResponseEntity<Resource> getImage(@RequestBody FileKey fileKey) throws Exception {
+        return documentosService.getImagem(fileKey.getKey());
     }
 
 }

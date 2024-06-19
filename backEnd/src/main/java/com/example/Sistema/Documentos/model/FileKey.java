@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileName {
+public class FileKey {
 
     private String name;
     private String key;

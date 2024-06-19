@@ -74,6 +74,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
                     <Avatar
                       src={`/images/flags/${lang}.svg`}
                       size={18}
+                      color="blue"
                       radius="lg"
                     />
                   }

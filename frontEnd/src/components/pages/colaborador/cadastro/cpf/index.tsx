@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ActionIcon,
+  Avatar,
   Button,
   Checkbox,
   FileButton,
   Flex,
   Group,
-  Image,
   NumberInput,
   PasswordInput,
   Select,
@@ -31,7 +31,7 @@ import { ErrorNotification, SuccessNotification } from '@components/common'
 import IRole from 'src/interfaces/role'
 import { IconCircleXFilled, IconDatabasePlus } from '@tabler/icons-react'
 import { IconTrash, IconUpload } from '@tabler/icons'
-import { UPLOAD_DOCUMENTOS_TEMP } from 'src/utils/Routes'
+import { CREATE_COLABORADOR, UPLOAD_DOCUMENTOS_TEMP } from 'src/utils/Routes'
 import { useRef, useEffect, useState } from 'react'
 import { validaColaborador } from '../../validation/schemaColaborador'
 interface IFile {
@@ -51,8 +51,8 @@ export default function CadastroCpf() {
     sobrenome: string
     cpf: string
     rg: string
-    dataNascimento: string
-    dataContratoInicial: string
+    dataNascimento: Date | null
+    dataContratoInicial: Date | null
     cep: string
     sexo: string
     cidade: string
@@ -61,6 +61,8 @@ export default function CadastroCpf() {
     estado: string
     isUsuario: null | number
     salario: number
+    cargo: string
+    ativo: string
     email: string
     senha: string
     numero: string
@@ -69,25 +71,27 @@ export default function CadastroCpf() {
     file: IFile
   }>({
     initialValues: {
-      id: null,
+      id: 0,
       nome: '',
       sobrenome: '',
+      dataNascimento: null,
+      dataContratoInicial: null,
+      sexo: '',
       cpf: '',
       rg: '',
-      dataNascimento: '',
-      dataContratoInicial: '',
       cep: '',
-      sexo: '',
-      cidade: '',
       bairro: '',
-      rua: '',
+      cidade: '',
       estado: '',
-      isUsuario: null,
+      telefone: '',
+      cargo: '',
+      ativo: 'ATIVO',
+      rua: '',
+      isUsuario: 0,
       email: '',
       numero: '',
       senha: '',
-      roleId: null,
-      telefone: '',
+      roleId: 0,
       salario: 0,
       file: {
         name: '',
@@ -103,7 +107,6 @@ export default function CadastroCpf() {
     handleChange(dados.data.localidade, 'cidade')
     handleChange(dados.data.logradouro, 'rua')
     handleChange(dados.data.uf, 'estado')
-    console.log(form.values)
   }
   const handleCheck = (val: boolean) => {
     setChecked(val)
@@ -117,13 +120,13 @@ export default function CadastroCpf() {
   }
   const handleSubmit = async () => {
     await api
-      .post(`/api/colaborador/adicionar`, form.values)
+      .post(CREATE_COLABORADOR, form.values)
       .then(response => {
         navigate.push('/colaborador')
         SuccessNotification({ message: response.data })
       })
       .catch(error => {
-        ErrorNotification({ message: error })
+        ErrorNotification({ message: error.message })
       })
   }
 
@@ -171,18 +174,9 @@ export default function CadastroCpf() {
 
   const renderDadosPessoais = () => {
     return (
-      <Flex mt={'0.5rem'} direction={'column'}>
+      <Flex mt={'1rem'} direction={'column'}>
         <Flex direction={'column'} align={'center'}>
-          <Image
-            radius={20}
-            width={100}
-            height={100}
-            src={photo}
-            alt=""
-            withPlaceholder
-            placeholder={<Text align="center">{t('components.photo')}</Text>}
-            className="ounded-full"
-          />
+          <Avatar color="blue" radius="xl" size={150} src={photo} alt="" />
           <Flex mt={'0.5rem'}>
             <FileButton
               resetRef={resetRef}
@@ -243,20 +237,6 @@ export default function CadastroCpf() {
               { value: 'Masculino', label: 'Masculino' },
               { value: 'Feminino', label: 'Feminino' },
             ]}
-            value="1"
-          />
-
-          <TextInput
-            withAsterisk
-            size="xs"
-            {...form.getInputProps('sobrenome')}
-            defaultValue={form.values?.sobrenome}
-            w={250}
-            label={t('pages.colaborador.cadastro.dadosPessoais.sobrenome')}
-            onChange={event => handleChange(event.target.value, 'sobrenome')}
-            placeholder={t(
-              'pages.colaborador.cadastro.dadosPessoais.inputSobrenome'
-            )}
           />
 
           <TextInput
@@ -293,7 +273,7 @@ export default function CadastroCpf() {
               withAsterisk={false}
               size="xs"
               clearable
-              onChange={val => handleChange(val, 'dataInicial')}
+              onChange={val => handleChange(val, 'dataContratoInicial')}
               label={t(
                 'pages.colaborador.cadastro.dadosPessoais.dataContratacao'
               )}
@@ -328,7 +308,7 @@ export default function CadastroCpf() {
   const renderDadosEndereco = () => {
     return (
       <>
-        <Title fw={700} mt={20} size="md">
+        <Title fw={700} mt={'1rem'} size="md">
           {t('pages.colaborador.cadastro.endereco.title')}
         </Title>
         <Group align={'center'}>
@@ -419,7 +399,7 @@ export default function CadastroCpf() {
   const renderContatos = () => {
     return (
       <>
-        <Text fw={700} mt={20} size="md">
+        <Text fw={700} mt={'1rem'} size="md">
           {t('pages.colaborador.cadastro.contatos.title')}
         </Text>
         <Group>
@@ -460,10 +440,22 @@ export default function CadastroCpf() {
   const renderDadosAdministrativos = () => {
     return (
       <>
-        <Text fw={700} mt={'0.5rem'} size="md">
-          {t('pages.colaborador.cadastro.administrativo.salario')}
+        <Text fw={700} mt={'1rem'} size="md">
+          {t('pages.colaborador.cadastro.administrativo.title')}
         </Text>
         <Group>
+          <TextInput
+            withAsterisk
+            w={250}
+            size="xs"
+            {...form.getInputProps('cargo')}
+            value={formatarTelefone(form.values?.cargo)}
+            onChange={event => handleChange(event.target.value, 'cargo')}
+            label={t('pages.colaborador.cadastro.administrativo.cargo')}
+            placeholder={t(
+              'pages.colaborador.cadastro.administrativo.inputCargo'
+            )}
+          />
           <NumberInput
             withAsterisk
             hideControls
@@ -491,13 +483,13 @@ export default function CadastroCpf() {
       <>
         <Checkbox
           checked={checked}
-          mt={'0.5rem'}
+          mt={'1rem'}
           onChange={event => handleCheck(event.currentTarget.checked)}
           label={t('pages.colaborador.cadastro.usuario.check')}
         />
         {checked && (
           <>
-            <Text fw={700} mt={'0.5rem'} size="md">
+            <Text fw={700} mt={'1rem'} size="md">
               {t('pages.colaborador.cadastro.usuario.title')}
             </Text>
             <Group>
@@ -550,7 +542,7 @@ export default function CadastroCpf() {
   }
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <form onSubmit={form.onSubmit(() => handleSubmit())}>
       {renderDadosPessoais()}
       {renderDadosEndereco()}
       {renderContatos()}

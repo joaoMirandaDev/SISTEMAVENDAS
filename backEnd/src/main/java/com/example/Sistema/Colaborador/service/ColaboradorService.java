@@ -1,5 +1,6 @@
 package com.example.Sistema.Colaborador.service;
 
+import com.example.Sistema.Colaborador.DTO.ColaboradorCreateDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
 import com.example.Sistema.Colaborador.specification.ColaboradorSpecification;
 import com.example.Sistema.Documentos.service.DocumentosService;
@@ -46,29 +47,33 @@ public class ColaboradorService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(ColaboradorDto colaboradorDto) throws Exception {
+    public void create(ColaboradorCreateDto colaboradorDto) throws Exception {
         try {
             Colaborador colaborador = new Colaborador();
+            colaborador.setAtivo(0);
+            colaborador.setCargo(colaboradorDto.getCargo());
+            colaborador.setCep(colaboradorDto.getCep());
+            colaborador.setCidade(colaboradorDto.getCidade());
+            colaborador.setCpf(colaboradorDto.getCpf());
+            colaborador.setDataContratoInicial(colaboradorDto.getDataContratoInicial());
+            colaborador.setDataNascimento(colaboradorDto.getDataNascimento());
+            colaborador.setEmail(colaboradorDto.getEmail());
+            colaborador.setEstado(colaboradorDto.getEstado());
+            colaborador.setBairro(colaboradorDto.getBairro());
             colaborador.setNome(colaboradorDto.getNome());
             colaborador.setSobrenome(colaboradorDto.getSobrenome());
-            colaborador.setCpf(colaboradorDto.getCpf());
             colaborador.setRg(colaboradorDto.getRg());
             colaborador.setNumero(colaboradorDto.getNumero());
-            colaborador.setCep(colaboradorDto.getCep());
             colaborador.setRua(colaboradorDto.getRua());
             colaborador.setSexo(colaboradorDto.getSexo());
-            colaborador.setBairro(colaboradorDto.getBairro());
-            colaborador.setCidade(colaboradorDto.getCidade());
             colaborador.setSalario(colaboradorDto.getSalario());
-            colaborador.setEstado(colaboradorDto.getEstado());
-            colaborador.setDataNascimento(colaboradorDto.getDataNascimento());
-            colaborador.setDataContratoInicial(colaboradorDto.getDataContratoInicial());
-            colaborador.setDataContratoFinal(colaboradorDto.getDataContratoFinal());
             colaborador.setTelefone(colaboradorDto.getTelefone());
-            colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
+            if (Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
+                colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
+            }
             colaboradorRepository.save(colaborador);
-            if (Optional.ofNullable(colaboradorDto.getIsUsuario()).orElse(0) == 1) {
-                usuarioService.createNewUser(colaboradorDto.getRoleId(), colaborador);
+            if (colaboradorDto.getIsUsuario() == 1) {
+                usuarioService.createNewUser(colaboradorDto.getSenha(),colaboradorDto.getRole(), colaborador);
             }
         } catch (DataAccessException e) {
             throw new Exception(messageSource.getMessage("error.save", null, LocaleInteface.BR),e);

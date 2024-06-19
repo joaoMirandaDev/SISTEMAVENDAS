@@ -24,8 +24,4 @@ public class Documentos {
     @Column(nullable = false, unique = true, columnDefinition = "TEXT")
     private String route;
 
-    public Documentos(Integer id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
 }

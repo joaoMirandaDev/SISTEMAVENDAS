@@ -1,0 +1,1 @@
+ALTER TABLE colaborador ADD COLUMN cargo TEXT;

@@ -26,6 +26,8 @@ public class Colaborador {
     private String sobrenome;
     private Date dataNascimento;
     private Date dataContratoInicial;
+    @Column(columnDefinition = "TEXT")
+    private String cargo;
     private Date dataContratoFinal;
     private String sexo;
     @NotEmpty

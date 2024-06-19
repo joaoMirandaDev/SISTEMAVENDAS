@@ -27,6 +27,8 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     private RoleService roleService;
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
     private final UsuarioRepository usuarioRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
@@ -73,13 +75,12 @@ public class UsuarioService implements UserDetailsService {
         return new UsuarioDTO(user.getId(),user.getRole());
     }
 
-    public void createNewUser(Integer idRole, Colaborador colaborador) {
-
+    public void createNewUser(String senha,Integer idRole, Colaborador colaborador) {
         Usuario usuario = new Usuario();
         usuario.setLogin(colaborador.getCpf());
         Role role = roleService.findById(idRole);
         usuario.setRole(role);
-        usuario.setSenha("$2a$10$IAbOgyrcbEUgEHjrC4wWVuYgQcWFK7Hc/n2uIQ8HYGwVgfU6UETh6");
+        usuario.setSenha(passwordEncoder.encode(senha));
         usuario.setColaborador(colaborador);
         usuarioRepository.save(usuario);
 

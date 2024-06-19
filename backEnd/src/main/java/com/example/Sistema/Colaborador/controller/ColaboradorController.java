@@ -1,5 +1,6 @@
 package com.example.Sistema.Colaborador.controller;
 
+import com.example.Sistema.Colaborador.DTO.ColaboradorCreateDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
 import com.example.Sistema.Utils.filtro.Filtro;
@@ -28,7 +29,7 @@ public class ColaboradorController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @Operation(summary = "Cadastro de colaborador", description = "Metodo utilizado para cadastrar os colaboradores", tags = "Colaborador")
-    public ResponseEntity<String> createNewColaborador(@Valid @RequestBody ColaboradorDto colaboradorDto) throws Exception {
+    public ResponseEntity<String> createNewColaborador(@Valid @RequestBody ColaboradorCreateDto colaboradorDto) throws Exception {
         colaboradorService.create(colaboradorDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(messageSource.getMessage("success.created", null, LocaleInteface.BR));
     }
