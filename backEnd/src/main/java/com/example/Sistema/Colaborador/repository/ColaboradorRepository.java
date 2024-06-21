@@ -13,8 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ColaboradorRepository extends PagingAndSortingRepository<Colaborador, Integer>, JpaRepository<Colaborador, Integer>, JpaSpecificationExecutor<Colaborador> {
 
-//    @Query(nativeQuery = true, value = "SELECT * FROM colaborador p WHERE p.cpf != '13226726609' ")
-//    Page<Colaborador> findAll(Specification<Colaborador> specification, Pageable pageable);
-
     Colaborador findByCpf(String cpf);
 }

@@ -50,5 +50,8 @@ public class Colaborador {
     private Documentos documentos;
     private Double salario;
 
-
+    public Colaborador(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 }

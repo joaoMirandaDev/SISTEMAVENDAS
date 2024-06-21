@@ -1,7 +1,7 @@
 /* Rotas colaborador */
 export const CREATE_COLABORADOR: string = '/api/colaborador/create'
 export const FIND_COLABORADOR: string = '/api/colaborador/findByCpfCnpj/'
-export const FIND_ALL_BY_PAGE_COLABORADOR = '/api/colaborador/list'
+export const FIND_ALL_BY_PAGE_COLABORADOR = '/api/colaborador/page'
 
 /* Rotas usuario */
 export const FIND_BY_USUARIO_LOGIN: string = '/api/usuarios/findByLogin/'

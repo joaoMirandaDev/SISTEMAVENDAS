@@ -16,17 +16,20 @@ import com.example.Sistema.Usuario.model.Usuario;
 import com.example.Sistema.Role.repository.RoleRepository;
 import com.example.Sistema.Usuario.repository.UsuarioRepository;
 import com.example.Sistema.Utils.pagination.Pagination;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.*;
 
 @Service
@@ -47,7 +50,7 @@ public class ColaboradorService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(ColaboradorCreateDto colaboradorDto) throws Exception {
+    public void create( ColaboradorCreateDto colaboradorDto) throws Exception {
         try {
             Colaborador colaborador = new Colaborador();
             colaborador.setAtivo(0);
@@ -68,7 +71,7 @@ public class ColaboradorService {
             colaborador.setSexo(colaboradorDto.getSexo());
             colaborador.setSalario(colaboradorDto.getSalario());
             colaborador.setTelefone(colaboradorDto.getTelefone());
-            if (Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
+            if (Objects.nonNull(colaboradorDto.getFile()) && Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
                 colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
             }
             colaboradorRepository.save(colaborador);
@@ -87,15 +90,21 @@ public class ColaboradorService {
         return new ColaboradorDto(colaborador);
     }
 
-
-    public ResponseEntity<String> deleteById(Integer id) {
-        colaboradorRepository.deleteById(id);
-        return ResponseEntity.ok(messageSource.getMessage("success.delete", null, LocaleInteface.BR));
+    public Page<ColaboradorDto> findByPage(FilterColaborador filtro) {
+        if (Objects.isNull(filtro.getId())) {
+            throw new IllegalArgumentException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
+        }
+        Pageable pageable = Pagination.createPageableFromFiltro(filtro, "nome");
+        Page<Colaborador> colaboradorPage = colaboradorRepository.findAll(ColaboradorSpecification.FiltroColaborador(filtro), pageable);
+        if (Objects.nonNull(colaboradorPage) && !colaboradorPage.getContent().isEmpty()) {
+            return colaboradorPage.map(ColaboradorDto::new);
+        }
+        return Page.empty();
     }
 
-    public Page<ColaboradorDto> findAllByPage(FilterColaborador filtro) {
-        Pageable pageable = Pagination.createPageableFromFiltro(filtro, "nome");
-        return colaboradorRepository.findAll(ColaboradorSpecification.FiltroColaborador(filtro), pageable).map(ColaboradorDto::new);
+
+    public void remove(Integer id) {
+        colaboradorRepository.deleteById(id);
     }
 
 //    public void editar(ColaboradorDto colaboradorDto) throws Exception {
@@ -127,7 +136,10 @@ public class ColaboradorService {
 //        }
 //    }
 
-    public ColaboradorDto findByCpfCnpj(String cpf) {
+    public ColaboradorDto getColaboradorByCpf(@NotEmpty String cpf) {
+        if (cpf.isEmpty()) {
+            throw new IllegalArgumentException("CPF não pode ser vazio");
+        }
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         return new ColaboradorDto(colaborador.getNome());
     }
