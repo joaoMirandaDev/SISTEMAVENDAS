@@ -8,15 +8,9 @@ export default interface IColaborador {
   id?: number
   sobrenome?: string
   nome?: string
-  numero?: string
   cpf?: string
   rg?: string
-  cep?: string
-  rua?: string
-  bairro?: string
-  cidade?: string
   isUsuario?: number
-  estado?: string
   telefone?: string
   email?: string
   senha?: string
@@ -25,5 +19,14 @@ export default interface IColaborador {
   file: {
     name?: string
     key?: string
+  }
+  endereco: {
+    id?: number
+    estado?: string
+    cidade?: string
+    cep?: string
+    numero?: string
+    bairro?: string
+    rua?: string
   }
 }

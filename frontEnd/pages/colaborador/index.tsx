@@ -25,7 +25,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import IColaborador from 'src/interfaces/colaborador'
-import ISearch from 'src/interfaces/search'
+import IFiltoColaborador from 'src/interfaces/IfiltroColaborador'
 import api from 'src/utils/Api'
 import { getImage } from 'src/utils/Arquivo'
 import { PAGE_INDEX, PAGE_SIZE } from 'src/utils/Constants'
@@ -54,12 +54,12 @@ export default function ColaboradorList() {
     pageIndex: PAGE_INDEX,
     pageSize: PAGE_SIZE,
   })
-  const [filtro, setFiltro] = useState<ISearch>({
+  const [filtro, setFiltro] = useState<IFiltoColaborador>({
     nome: '',
     sobrenome: '',
     cpf: '',
-    estado: '',
-    cidade: '',
+    // estado: '',
+    // cidade: '',
     ativo: 0,
     pagina: 0,
     tamanhoPagina: 10,
@@ -71,8 +71,8 @@ export default function ColaboradorList() {
       nome: '',
       sobrenome: '',
       cpf: '',
-      estado: '',
-      cidade: '',
+      // estado: '',
+      // cidade: '',
       ativo: 0,
       pagina: 0,
       tamanhoPagina: 10,
@@ -108,15 +108,15 @@ export default function ColaboradorList() {
           case 'sobrenome':
             filterCliente('sobrenome', column.value)
             break
-          case 'cidade':
-            filterCliente('cidade', column.value)
-            break
+          // case 'cidade':
+          //   filterCliente('cidade', column.value)
+          //   break
           case 'cpf':
             filterCliente('cpf', column.value.replace(/[. -]/g, ''))
             break
-          case 'estado':
-            filterCliente('estado', column.value)
-            break
+          // case 'estado':
+          //   filterCliente('estado', column.value)
+          //   break
           case 'ativo':
             {
               const val = column.value === 'Ativo' ? 0 : 1
@@ -292,7 +292,7 @@ export default function ColaboradorList() {
         },
       },
       {
-        accessorKey: 'estado',
+        accessorKey: 'endereco.estado',
         header: t('pages.colaborador.components.table.estado'),
         enableSorting: true,
         filterVariant: 'select',
@@ -306,9 +306,14 @@ export default function ColaboradorList() {
         mantineTableHeadCellProps: {
           align: 'center',
         },
+        Cell: ({ row }) => {
+          return row.original.endereco && row.original.endereco.estado != null
+            ? row.original.endereco.estado
+            : '-'
+        },
       },
       {
-        accessorKey: 'cidade',
+        accessorKey: 'endereco.cidade',
         header: t('pages.colaborador.components.table.cidade'),
         enableSorting: true,
         enableColumnFilter: true,
@@ -320,6 +325,11 @@ export default function ColaboradorList() {
         },
         mantineTableHeadCellProps: {
           align: 'center',
+        },
+        Cell: ({ row }) => {
+          return row.original.endereco && row.original.endereco.cidade != null
+            ? row.original.endereco.cidade
+            : '-'
         },
       },
       {
@@ -464,20 +474,28 @@ export default function ColaboradorList() {
               <Text fw={'bold'}>
                 {t('pages.colaborador.components.detailTable.endereco.cidade')}
               </Text>
-              <Text ml={'0.5rem'}>{row.original.cidade}</Text>
+              <Text ml={'0.5rem'}>
+                {row.original.endereco && row.original.endereco.cidade
+                  ? row.original.endereco && row.original.endereco.cidade
+                  : '-'}
+              </Text>
             </Flex>
             <Flex>
               <Text fw={'bold'}>
                 {t('pages.colaborador.components.detailTable.endereco.bairro')}
               </Text>
               <Text ml={'0.5rem'}>
-                {row.original.bairro ? row.original.bairro : '-'}
+                {row.original.endereco && row.original.endereco.bairro
+                  ? row.original.endereco.bairro
+                  : '-'}
               </Text>
             </Flex>
             <Flex>
               <Text fw={'bold'}>Estado:</Text>
               <Text ml={'0.5rem'}>
-                {row.original.estado ? row.original.estado : '-'}
+                {row.original.endereco && row.original.endereco.estado
+                  ? row.original.endereco.estado
+                  : '-'}
               </Text>
             </Flex>
             <Flex>
@@ -485,7 +503,9 @@ export default function ColaboradorList() {
                 {t('pages.colaborador.components.detailTable.endereco.numero')}
               </Text>
               <Text ml={'0.5rem'}>
-                {row.original.numero ? row.original.numero : '-'}
+                {row.original.endereco && row.original.endereco.numero
+                  ? row.original.endereco.numero
+                  : '-'}
               </Text>
             </Flex>
             <Flex>
@@ -493,7 +513,9 @@ export default function ColaboradorList() {
                 {t('pages.colaborador.components.detailTable.endereco.cep')}
               </Text>
               <Text ml={'0.5rem'}>
-                {row.original.cep ? formataCep(row.original.cep) : '-'}
+                {row.original.endereco && row.original.endereco.cep
+                  ? formataCep(row.original.endereco.cep)
+                  : '-'}
               </Text>
             </Flex>
           </Flex>

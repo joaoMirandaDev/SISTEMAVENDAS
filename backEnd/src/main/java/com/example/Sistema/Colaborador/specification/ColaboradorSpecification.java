@@ -14,8 +14,8 @@ public interface ColaboradorSpecification {
         Specification<Colaborador> specification = filterByProperty("nome",filter.getNome())
         .and(filterByProperty("sobrenome",filter.getSobrenome()))
         .and(filterByProperty("cpf",filter.getCpf()))
-        .and(filterByProperty("estado",filter.getEstado()))
-        .and(filterByProperty("cidade", filter.getCidade()))
+//        .and(filterByProperty("estado",filter.getEstado()))
+//        .and(filterByProperty("cidade", filter.getCidade()))
         .and(filterByPropertyInterger("ativo", filter.getAtivo()));
      return specification;
     }

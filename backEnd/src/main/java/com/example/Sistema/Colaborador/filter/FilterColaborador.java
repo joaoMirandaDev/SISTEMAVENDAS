@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 
 @Getter
@@ -15,14 +17,13 @@ public class FilterColaborador {
     @NotEmpty
     private String id;
     private boolean desc;
+    @Positive
     private Integer tamanhoPagina = 10;
+    @PositiveOrZero
     private Integer pagina = 0;
-
     private String nome;
     private String sobrenome;
     private String cpf;
-    private String estado;
-    private String cidade;
     private Integer ativo;
 
 

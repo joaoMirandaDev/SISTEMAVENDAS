@@ -8,19 +8,15 @@ CREATE TABLE colaborador (
   data_contrato_inicial DATE,
   data_contrato_final DATE,
   rg VARCHAR(20),
-  estado VARCHAR(2),
-  cidade VARCHAR(100),
-  cep VARCHAR(8),
-  numero VARCHAR(100),
   documento_id_photo INTEGER,
-  bairro VARCHAR(500),
-  rua VARCHAR(200),
   salario DOUBLE,
   is_usuario INTEGER,
   email VARCHAR(100),
   telefone VARCHAR(100),
   ativo INTEGER,
+  id_endereco INTEGER,
   PRIMARY KEY (id),
+  FOREIGN KEY (id_endereco) REFERENCES endereco(id),
   FOREIGN KEY (documento_id_photo) REFERENCES documentos(id)
 );
 

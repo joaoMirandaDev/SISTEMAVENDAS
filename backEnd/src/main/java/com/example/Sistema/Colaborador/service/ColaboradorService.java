@@ -2,8 +2,11 @@ package com.example.Sistema.Colaborador.service;
 
 import com.example.Sistema.Colaborador.DTO.ColaboradorCreateDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
+import com.example.Sistema.Colaborador.mapper.ColaboradorMapper;
+import com.example.Sistema.Colaborador.mapper.ColaboradorMapperImpl;
 import com.example.Sistema.Colaborador.specification.ColaboradorSpecification;
 import com.example.Sistema.Documentos.service.DocumentosService;
+import com.example.Sistema.Endereco.service.EnderecoService;
 import com.example.Sistema.Role.model.Role;
 import com.example.Sistema.Usuario.services.UsuarioService;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
@@ -37,17 +40,12 @@ import java.util.*;
 public class ColaboradorService {
 
     private final MessageSource messageSource;
+    private final ColaboradorMapper mapper;
     private final DocumentosService documentosService;
+    private final EnderecoService enderecoService;
     private final UsuarioService usuarioService;
-
     private final ColaboradorRepository colaboradorRepository;
-    private static final Map<String, String> CAMPO_ORDENACAO = new HashMap<>();
 
-    static {
-        CAMPO_ORDENACAO.put("nome", "nome");
-        CAMPO_ORDENACAO.put("cpf", "cpf");
-        CAMPO_ORDENACAO.put("telefone", "telefone");
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public void create( ColaboradorCreateDto colaboradorDto) throws Exception {
@@ -55,27 +53,22 @@ public class ColaboradorService {
             Colaborador colaborador = new Colaborador();
             colaborador.setAtivo(0);
             colaborador.setCargo(colaboradorDto.getCargo());
-            colaborador.setCep(colaboradorDto.getCep());
-            colaborador.setCidade(colaboradorDto.getCidade());
             colaborador.setCpf(colaboradorDto.getCpf());
             colaborador.setDataContratoInicial(colaboradorDto.getDataContratoInicial());
             colaborador.setDataNascimento(colaboradorDto.getDataNascimento());
             colaborador.setEmail(colaboradorDto.getEmail());
-            colaborador.setEstado(colaboradorDto.getEstado());
-            colaborador.setBairro(colaboradorDto.getBairro());
             colaborador.setNome(colaboradorDto.getNome());
             colaborador.setSobrenome(colaboradorDto.getSobrenome());
             colaborador.setRg(colaboradorDto.getRg());
-            colaborador.setNumero(colaboradorDto.getNumero());
-            colaborador.setRua(colaboradorDto.getRua());
             colaborador.setSexo(colaboradorDto.getSexo());
             colaborador.setSalario(colaboradorDto.getSalario());
+            colaborador.setEndereco(colaboradorDto.getEndereco() == null ? null : enderecoService.add(colaboradorDto.getEndereco()));
             colaborador.setTelefone(colaboradorDto.getTelefone());
             if (Objects.nonNull(colaboradorDto.getFile()) && Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
                 colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
             }
             colaboradorRepository.save(colaborador);
-            if (colaboradorDto.getIsUsuario() == 1) {
+            if (colaboradorDto.getIsUsuario() == 1 && !colaboradorDto.getSenha().isEmpty() && Objects.nonNull(colaboradorDto.getRole())) {
                 usuarioService.createNewUser(colaboradorDto.getSenha(),colaboradorDto.getRole(), colaborador);
             }
         } catch (DataAccessException e) {
@@ -140,7 +133,6 @@ public class ColaboradorService {
         if (cpf.isEmpty()) {
             throw new IllegalArgumentException("CPF não pode ser vazio");
         }
-        Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
-        return new ColaboradorDto(colaborador.getNome());
+        return mapper.colaboradorToColaboradorDto(colaboradorRepository.findByCpf(cpf));
     }
 }

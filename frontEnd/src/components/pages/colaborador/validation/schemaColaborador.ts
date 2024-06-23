@@ -5,18 +5,13 @@ const validaColaborador = () => {
   const t = useTranslate()
   return z.object({
     id: z.optional(z.number()),
-    nome: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') })
-      .toUpperCase(),
+    nome: z.string().nonempty({ message: t('components.error.requiredField') }),
     cargo: z
       .string()
-      .nonempty({ message: t('components.error.requiredField') })
-      .toUpperCase(),
+      .nonempty({ message: t('components.error.requiredField') }),
     sobrenome: z
       .string()
-      .nonempty({ message: t('components.error.requiredField') })
-      .toUpperCase(),
+      .nonempty({ message: t('components.error.requiredField') }),
     cpf: z
       .string()
       .nonempty({ message: t('components.error.requiredField') })

@@ -1,5 +1,9 @@
-package com.example.Sistema.Utils.service;
+package com.example.Sistema.Endereco.service;
 
+import com.example.Sistema.Endereco.Dto.EnderecoDTO;
+import com.example.Sistema.Endereco.model.Endereco;
+import com.example.Sistema.Endereco.repository.EnderecoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -9,7 +13,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
+@RequiredArgsConstructor
 public class EnderecoService {
+
+    private final EnderecoRepository enderecoRepository;
+
     public Object findByRegiao(String cep) throws IOException {
         long cepConvert = Long.parseLong(cep);
         String url = "https://viacep.com.br/ws/"+cepConvert+"/json/";
@@ -30,4 +38,18 @@ public class EnderecoService {
 
         return response;
     }
+
+    public Endereco add(EnderecoDTO enderecoDTO) {
+        Endereco endereco = new Endereco();
+
+        endereco.setCep(enderecoDTO.getCep());
+        endereco.setCidade(enderecoDTO.getCidade());
+        endereco.setBairro(enderecoDTO.getBairro());
+        endereco.setEstado(enderecoDTO.getEstado());
+        endereco.setRua(enderecoDTO.getRua());
+        endereco.setNumero(enderecoDTO.getNumero());
+
+       return enderecoRepository.save(endereco);
+    }
+
 }

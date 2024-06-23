@@ -10,18 +10,18 @@ public class ColaboradorConstantTest {
 
     public static final ColaboradorCreateDto CREATE_COLABORADOR = new ColaboradorCreateDto(null, "JOAO", "SOUZA"
             ,null, null, "MASCULINO", "13226726609", "19517206",
-            "35053060", "AVENIDA DO CANAL", "ALTINOPOLIS", "GV", "MG", "339994717553", "ALMOXARIFE",0, "JOAO@TESTE.COM","123456", "341", null, 1750.00, null);
+             "339994717553", "ALMOXARIFE",0, "JOAO@TESTE.COM","123456", 1, 1750.00, null, null);
 
     public static final ColaboradorDto COLABORADOR = new ColaboradorDto(1, "joao", "SOUZA"
             ,null, null,null, "MASCULINO", "13226726609", "19517206",
-            "35053060", "AVENIDA DO CANAL", "ALTINOPOLIS", "GV", "MG", "339994717553", "ALMOXARIFE",
-            0, "JOAO@TESTE.COM", "ATIVO", "341", null, 1750.00, null);
+             "339994717553", "ALMOXARIFE",
+            0, "JOAO@TESTE.COM", "ATIVO", 1, 1750.00, null, null);
 
     public static final ColaboradorCreateDto COLABORADOR_IS_EMPTY = new ColaboradorCreateDto();
 
     public static final ColaboradorCreateDto INVALID_COLABORADOR = new ColaboradorCreateDto(null, "", "SOUZA"
-            ,null, null, "MASCULINO", "13226726609", "19517206",
-            "35053060", "AVENIDA DO CANAL", "ALTINOPOLIS", "GV", "MG", "339994717553", "ALMOXARIFE",
-            0, "JOAO@TESTE.COM","123456", "341", null, 1750.00, null);
+            ,null, null, "MASCULINO", "13226726609", "19517206"
+            , "339994717553", "ALMOXARIFE",
+            0, "JOAO@TESTE.COM","123456", 1, 1750.00, null, null);
 
 }

@@ -1,6 +1,6 @@
-package com.example.Sistema.Utils.controller;
+package com.example.Sistema.Endereco.controller;
 
-import com.example.Sistema.Utils.service.EnderecoService;
+import com.example.Sistema.Endereco.service.EnderecoService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,7 @@
 package com.example.Sistema.Colaborador.model;
 
 import com.example.Sistema.Documentos.model.Documentos;
+import com.example.Sistema.Endereco.model.Endereco;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,15 +36,12 @@ public class Colaborador {
     private String cpf;
     @Column(unique = true, nullable = false)
     private String rg;
-    private String cep;
-    private String rua;
-    private String Bairro;
-    private String cidade;
-    private String estado;
+    @OneToOne
+    @JoinColumn(name = "id_endereco", referencedColumnName = "id")
+    private Endereco endereco;
     private Integer isUsuario;
     private String telefone;
     private String email;
-    private String numero;
     private Integer ativo;
     @OneToOne
     @JoinColumn(name = "documento_id_photo", referencedColumnName = "id")

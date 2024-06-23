@@ -1,4 +1,4 @@
-export default interface ISearch {
+export default interface IFiltoColaborador {
   search?: string | Date | string
   id?: string
   desc?: boolean
@@ -7,7 +7,7 @@ export default interface ISearch {
   nome?: string
   sobrenome?: string
   cpf?: string
-  estado?: string
-  cidade?: string
+  // estado?: string
+  // cidade?: string
   ativo?: number | string
 }
