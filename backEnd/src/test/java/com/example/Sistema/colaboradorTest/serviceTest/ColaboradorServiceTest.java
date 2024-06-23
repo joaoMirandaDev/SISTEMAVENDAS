@@ -14,7 +14,7 @@ import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
 import com.example.Sistema.Colaborador.service.ColaboradorService;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
-import com.example.Sistema.Utils.pagination.Pagination;
+import com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable;
 import com.example.Sistema.colaboradorTest.modelTest.ColaboradorConstantTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ public class ColaboradorServiceTest {
     private ColaboradorService colaboradorService;
 
     @Mock
-    private Pagination pagination;
+    private GenericSpecificationAndPegeable generic;
 
     @Mock
     private Colaborador colaborador;
@@ -75,7 +75,7 @@ public class ColaboradorServiceTest {
     @Test
     public void Pagecolaborador_WithValidData_ReturnsPage() {
         FilterColaborador filtro = new FilterColaborador("nome" ,false, 10, 0, "");
-        Pageable pageable = Pagination.createPageableFromFiltro(filtro, "nome");
+        Pageable pageable = generic.createPageableFromFiltro(filtro, "nome");
         List<Colaborador> listContent = Arrays.asList(
                 new Colaborador(null, "JOAO")
         );

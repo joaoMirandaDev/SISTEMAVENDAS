@@ -58,8 +58,8 @@ export default function ColaboradorList() {
     nome: '',
     sobrenome: '',
     cpf: '',
-    // estado: '',
-    // cidade: '',
+    estado: '',
+    cidade: '',
     ativo: 0,
     pagina: 0,
     tamanhoPagina: 10,
@@ -71,8 +71,8 @@ export default function ColaboradorList() {
       nome: '',
       sobrenome: '',
       cpf: '',
-      // estado: '',
-      // cidade: '',
+      estado: '',
+      cidade: '',
       ativo: 0,
       pagina: 0,
       tamanhoPagina: 10,
@@ -108,15 +108,15 @@ export default function ColaboradorList() {
           case 'sobrenome':
             filterCliente('sobrenome', column.value)
             break
-          // case 'cidade':
-          //   filterCliente('cidade', column.value)
-          //   break
+          case 'endereco.cidade':
+            filterCliente('cidade', column.value)
+            break
           case 'cpf':
             filterCliente('cpf', column.value.replace(/[. -]/g, ''))
             break
-          // case 'estado':
-          //   filterCliente('estado', column.value)
-          //   break
+          case 'endereco.estado':
+            filterCliente('estado', column.value)
+            break
           case 'ativo':
             {
               const val = column.value === 'Ativo' ? 0 : 1

@@ -23,6 +23,8 @@ public class FilterColaborador {
     private Integer pagina = 0;
     private String nome;
     private String sobrenome;
+    private String estado;
+    private String cidade;
     private String cpf;
     private Integer ativo;
 

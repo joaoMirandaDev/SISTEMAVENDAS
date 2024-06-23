@@ -3,37 +3,29 @@ package com.example.Sistema.Colaborador.service;
 import com.example.Sistema.Colaborador.DTO.ColaboradorCreateDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
 import com.example.Sistema.Colaborador.mapper.ColaboradorMapper;
-import com.example.Sistema.Colaborador.mapper.ColaboradorMapperImpl;
-import com.example.Sistema.Colaborador.specification.ColaboradorSpecification;
 import com.example.Sistema.Documentos.service.DocumentosService;
 import com.example.Sistema.Endereco.service.EnderecoService;
-import com.example.Sistema.Role.model.Role;
 import com.example.Sistema.Usuario.services.UsuarioService;
+import com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
 import com.example.Sistema.Utils.exceptions.NotFoundException;
-import com.example.Sistema.Utils.filtro.Filtro;
 import com.example.Sistema.Colaborador.DTO.ColaboradorDto;
 import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
-import com.example.Sistema.Usuario.model.Usuario;
-import com.example.Sistema.Role.repository.RoleRepository;
-import com.example.Sistema.Usuario.repository.UsuarioRepository;
-import com.example.Sistema.Utils.pagination.Pagination;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.*;
+
+import static com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable.*;
 
 @Service
 @RequiredArgsConstructor
@@ -83,12 +75,21 @@ public class ColaboradorService {
         return new ColaboradorDto(colaborador);
     }
 
-    public Page<ColaboradorDto> findByPage(FilterColaborador filtro) {
+    public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {
         if (Objects.isNull(filtro.getId())) {
             throw new IllegalArgumentException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
         }
-        Pageable pageable = Pagination.createPageableFromFiltro(filtro, "nome");
-        Page<Colaborador> colaboradorPage = colaboradorRepository.findAll(ColaboradorSpecification.FiltroColaborador(filtro), pageable);
+        Pageable pageable = createPageableFromFiltro(filtro, "nome");
+
+        Specification<Colaborador> specification = GenericSpecificationAndPegeable.
+                <Colaborador>filterByProperty("nome",filtro.getNome())
+                .and(filterByProperty("sobrenome",filtro.getSobrenome()))
+                .and(filterByProperty("cpf",filtro.getCpf()))
+                .and(filterByIdWithJoin("endereco","estado",filtro.getEstado()))
+                .and(filterByIdWithJoin("endereco","cidade" ,filtro.getCidade()))
+                .and(filterByPropertyInterger("ativo", filtro.getAtivo()));
+
+        Page<Colaborador> colaboradorPage = colaboradorRepository.findAll(specification, pageable);
         if (Objects.nonNull(colaboradorPage) && !colaboradorPage.getContent().isEmpty()) {
             return colaboradorPage.map(ColaboradorDto::new);
         }
