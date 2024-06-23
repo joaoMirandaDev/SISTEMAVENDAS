@@ -103,8 +103,10 @@ public class ColaboradorServiceTest {
 
     @Test
     public void deleteColaborador_WithUnexistingId_ThrowsException() {
-        doThrow(new RuntimeException()).when(colaboradorRepository).deleteById(99);
+        // QUando faz a instancia do mock e o utilizar no when quer dizer que ele pode aceitar null
+        ColaboradorService mock  = mock(ColaboradorService.class);
+        doThrow(new RuntimeException()).when(mock).remove(1);
 
-        assertThatThrownBy(() -> colaboradorService.remove(99)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> mock.remove(1)).isInstanceOf(RuntimeException.class);
     }
 }

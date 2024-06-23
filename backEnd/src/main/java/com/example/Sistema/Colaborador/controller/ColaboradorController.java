@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 
 @RestController
@@ -44,10 +46,10 @@ public class ColaboradorController {
 
     @RequestMapping(value = "/deleteById/{id}", method = RequestMethod.DELETE, produces = "application/json")
     @Operation(summary = "Deletar colaborador", description = "Metodo utilizado para deletar os colaboradores", tags = "Colaborador")
-    public ResponseEntity<String> deleteById(@NonNull @PathVariable("id") Integer id) {
+    public ResponseEntity<String> deleteById(@NotNull @PositiveOrZero @PathVariable("id") Integer id) {
         try {
             colaboradorService.remove(id);
-          return  ResponseEntity.ok(messageSource.getMessage("success.delete", null, LocaleInteface.BR));
+          return ResponseEntity.ok(messageSource.getMessage("success.delete", null, LocaleInteface.BR));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(messageSource.getMessage("error.delete", null, LocaleInteface.BR));

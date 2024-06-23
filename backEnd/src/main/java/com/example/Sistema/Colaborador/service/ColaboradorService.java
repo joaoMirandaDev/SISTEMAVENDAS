@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.*;
 
 import static com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable.*;
@@ -97,8 +99,12 @@ public class ColaboradorService {
     }
 
 
-    public void remove(Integer id) {
-        colaboradorRepository.deleteById(id);
+    public void remove(@NotNull @Positive Integer id) {
+        if (colaboradorRepository.existsById(id)) {
+            colaboradorRepository.deleteById(id);
+        } else {
+            throw new RuntimeException(messageSource.getMessage("erro.invalid.result.baseData", null, LocaleInteface.BR));
+        }
     }
 
 //    public void editar(ColaboradorDto colaboradorDto) throws Exception {
