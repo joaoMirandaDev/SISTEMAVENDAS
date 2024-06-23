@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 
@@ -40,13 +41,13 @@ public class ColaboradorController {
 
     @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET, produces = "application/json")
     @Operation(summary = "FindById", description = "Metodo utilizado para resgatar o colaborador por ID", tags = "Colaborador")
-    public ColaboradorDto findById(@PathVariable Integer id) {
+    public ColaboradorDto findById(@Positive @NotNull @PathVariable("id") Integer id) {
         return colaboradorService.findById(id);
     }
 
     @RequestMapping(value = "/deleteById/{id}", method = RequestMethod.DELETE, produces = "application/json")
     @Operation(summary = "Deletar colaborador", description = "Metodo utilizado para deletar os colaboradores", tags = "Colaborador")
-    public ResponseEntity<String> deleteById(@NotNull @PositiveOrZero @PathVariable("id") Integer id) {
+    public ResponseEntity<String> deleteById(@NotNull @Positive @PathVariable("id") Integer id) {
         try {
             colaboradorService.deleteById(id);
           return ResponseEntity.ok(messageSource.getMessage("success.delete", null, LocaleInteface.BR));
@@ -71,7 +72,7 @@ public class ColaboradorController {
 
     @RequestMapping(value = "/findByCpfCnpj/{cpf}", method = RequestMethod.GET,produces = "application/json")
     @Operation(summary = "getColaboradorByCpf", description = "Metodo utilizado para resgatar os colaboradores por CPF", tags = "Colaborador")
-    public ColaboradorDto getColaboradorByCpf(@PathVariable("cpf") String cpf) {
+    public ColaboradorDto getColaboradorByCpf(@NotEmpty @PathVariable("cpf") String cpf) {
         return colaboradorService.getColaboradorByCpf(cpf);
     }
 }

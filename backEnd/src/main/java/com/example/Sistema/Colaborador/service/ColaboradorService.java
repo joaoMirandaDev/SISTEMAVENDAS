@@ -42,7 +42,7 @@ public class ColaboradorService {
     private final UsuarioService usuarioService;
     private final ColaboradorRepository colaboradorRepository;
 
-    public Pageable createPageableFromFiltro(FilterColaborador filtro, String OrderInitial) {
+    public Pageable createPageableFromFiltro(@Valid FilterColaborador filtro, String OrderInitial) {
         if (Objects.isNull(filtro.getId())) {
             filtro.setId(OrderInitial);
             filtro.setDesc(true);
@@ -54,7 +54,7 @@ public class ColaboradorService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void create( ColaboradorCreateDto colaboradorDto) throws Exception {
+    public void create(@Valid ColaboradorCreateDto colaboradorDto) throws Exception {
         try {
             Colaborador colaborador = new Colaborador();
             colaborador.setAtivo(0);
@@ -82,7 +82,7 @@ public class ColaboradorService {
         }
     }
 
-    public ColaboradorDto findById(Integer id) {
+    public ColaboradorDto findById(@Positive @NotNull Integer id) {
         Colaborador colaborador =  colaboradorRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR)
         ));
@@ -90,9 +90,7 @@ public class ColaboradorService {
     }
 
     public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {
-        if (Objects.isNull(filtro.getId())) {
-            throw new IllegalArgumentException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
-        }
+
         Pageable pageable = createPageableFromFiltro(filtro, "nome");
 
         Specification<Colaborador> specification = GenericSpecificationAndPegeable.
