@@ -1,8 +1,7 @@
 package com.example.Sistema.colaboradorTest.serviceTest;
 
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,7 +74,7 @@ public class ColaboradorServiceTest {
     @Test
     public void Pagecolaborador_WithValidData_ReturnsPage() {
         FilterColaborador filtro = new FilterColaborador("nome" ,false, 10, 0, "");
-        Pageable pageable = generic.createPageableFromFiltro(filtro, "nome");
+        Pageable pageable = colaboradorService.createPageableFromFiltro(filtro, "nome");
         List<Colaborador> listContent = Arrays.asList(
                 new Colaborador(null, "JOAO")
         );
@@ -102,11 +101,16 @@ public class ColaboradorServiceTest {
     }
 
     @Test
-    public void deleteColaborador_WithUnexistingId_ThrowsException() {
-        // QUando faz a instancia do mock e o utilizar no when quer dizer que ele pode aceitar null
+    public void deleteColaborador_withExistingId() {
         ColaboradorService mock  = mock(ColaboradorService.class);
-        doThrow(new RuntimeException()).when(mock).remove(1);
+        doNothing().when(mock).deleteById(1);
+        assertThatCode(() -> mock.deleteById(1)).doesNotThrowAnyException();
+    }
 
-        assertThatThrownBy(() -> mock.remove(1)).isInstanceOf(RuntimeException.class);
+    @Test
+    public void deleteColaborador_WithUnexistingId_ThrowsException() {
+        ColaboradorService mock  = mock(ColaboradorService.class);
+        doThrow(new RuntimeException()).when(mock).deleteById(1);
+        assertThatThrownBy(() -> mock.deleteById(1)).isInstanceOf(RuntimeException.class);
     }
 }

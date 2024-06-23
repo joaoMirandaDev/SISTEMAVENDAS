@@ -16,16 +16,6 @@ import java.util.Objects;
 
 public class GenericSpecificationAndPegeable {
 
-   public static Pageable createPageableFromFiltro(FilterColaborador filtro, String OrderInitial) {
-        if (Objects.isNull(filtro.getId())) {
-            filtro.setId(OrderInitial);
-            filtro.setDesc(true);
-        }
-
-        Sort sort = filtro.isDesc() ? Sort.by(filtro.getId()).descending() : Sort.by(filtro.getId()).ascending();
-        return PageRequest.of(filtro.getPagina(), filtro.getTamanhoPagina(), sort);
-    }
-
     public static <T> Specification<T> filterByIdWithJoinList(String joinProperty1, String joinProperty2, String idProperty, List<Integer> values) {
         if (values == null || values.isEmpty()) {
             return (root, query, builder) -> builder.conjunction();

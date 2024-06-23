@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,16 @@ public class ColaboradorService {
     private final EnderecoService enderecoService;
     private final UsuarioService usuarioService;
     private final ColaboradorRepository colaboradorRepository;
+
+    public Pageable createPageableFromFiltro(FilterColaborador filtro, String OrderInitial) {
+        if (Objects.isNull(filtro.getId())) {
+            filtro.setId(OrderInitial);
+            filtro.setDesc(true);
+        }
+
+        Sort sort = filtro.isDesc() ? Sort.by(filtro.getId()).descending() : Sort.by(filtro.getId()).ascending();
+        return PageRequest.of(filtro.getPagina(), filtro.getTamanhoPagina(), sort);
+    }
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -99,7 +111,7 @@ public class ColaboradorService {
     }
 
 
-    public void remove(@NotNull @Positive Integer id) {
+    public void deleteById(@NotNull @Positive Integer id) {
         if (colaboradorRepository.existsById(id)) {
             colaboradorRepository.deleteById(id);
         } else {
@@ -136,7 +148,7 @@ public class ColaboradorService {
 //        }
 //    }
 
-    public ColaboradorDto getColaboradorByCpf(@NotEmpty String cpf) {
+    public ColaboradorDto getColaboradorByCpf(@NotNull @NotEmpty String cpf) {
         if (cpf.isEmpty()) {
             throw new IllegalArgumentException("CPF não pode ser vazio");
         }

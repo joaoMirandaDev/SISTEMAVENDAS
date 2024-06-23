@@ -157,7 +157,7 @@ public class ColaboradorControllerTest {
     @Test
     @WithMockUser(roles = {"ADMIN"})
     public void Colaborador_WithDeleteById_ReturnsString() throws Exception {
-        Mockito.doNothing().when(colaboradorService).remove(1);
+        Mockito.doNothing().when(colaboradorService).deleteById(1);
         mockMvc.perform(delete("/api/colaborador/deleteById/1"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("Deletado com sucesso."));
@@ -167,11 +167,11 @@ public class ColaboradorControllerTest {
     @WithMockUser(roles = {"ADMIN"})
     public void Colaborador_WithDeleteById_ReturnsThrown() throws Exception {
 
-        doThrow(new RuntimeException()).when(colaboradorService).remove(1);
+        doThrow(new RuntimeException()).when(colaboradorService).deleteById(1);
         mockMvc.perform(delete("/api/colaborador/deleteById/1"))
                 .andExpect(status().isInternalServerError());
 
-        doThrow(new NullPointerException()).when(colaboradorService).remove(null);
+        doThrow(new NullPointerException()).when(colaboradorService).deleteById(null);
         mockMvc.perform(delete("/api/colaborador/deleteById/null"))
                 .andExpect(status().isBadRequest());
 

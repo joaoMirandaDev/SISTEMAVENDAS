@@ -48,7 +48,7 @@ public class ColaboradorController {
     @Operation(summary = "Deletar colaborador", description = "Metodo utilizado para deletar os colaboradores", tags = "Colaborador")
     public ResponseEntity<String> deleteById(@NotNull @PositiveOrZero @PathVariable("id") Integer id) {
         try {
-            colaboradorService.remove(id);
+            colaboradorService.deleteById(id);
           return ResponseEntity.ok(messageSource.getMessage("success.delete", null, LocaleInteface.BR));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
