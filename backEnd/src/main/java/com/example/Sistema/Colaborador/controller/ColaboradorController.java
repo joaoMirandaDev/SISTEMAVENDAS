@@ -64,11 +64,11 @@ public class ColaboradorController {
         return ResponseEntity.ok(colaboradorService.findByPage(filtro));
     }
 
-//    @PutMapping(value = "/editar", produces = "application/json")
-//    @Operation(summary = "Editar colaborador", description = "Metodo utilizado para editar os colaboradores por ID", tags = "Colaborador")
-//    public void editar(@RequestBody ColaboradorDto colaboradorDto) throws Exception {
-//        colaboradorService.editar(colaboradorDto);
-//    }
+    @PutMapping(value = "/editar", produces = "application/json")
+    @Operation(summary = "Editar colaborador", description = "Metodo utilizado para editar os colaboradores por ID", tags = "Colaborador")
+    public void editar(@RequestBody ColaboradorCreateDto colaboradorDto) throws Exception {
+        colaboradorService.edit(colaboradorDto);
+    }
 
     @RequestMapping(value = "/findByCpfCnpj/{cpf}", method = RequestMethod.GET,produces = "application/json")
     @Operation(summary = "getColaboradorByCpf", description = "Metodo utilizado para resgatar os colaboradores por CPF", tags = "Colaborador")

@@ -79,8 +79,10 @@ public class ColaboradorService {
         return new ColaboradorDto(colaborador);
     }
 
-    public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {
-
+    public Page<ColaboradorDto> findByPage(FilterColaborador filtro) {
+        if (filtro.getId() == null || filtro.getId().isEmpty()) {
+            throw new IllegalArgumentException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
+        }
         Pageable pageable = createPageableFromFiltro(filtro, "nome");
 
         Specification<Colaborador> specification = GenericSpecificationAndPegeable.

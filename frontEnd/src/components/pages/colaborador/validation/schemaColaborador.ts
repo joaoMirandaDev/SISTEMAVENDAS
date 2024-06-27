@@ -45,7 +45,7 @@ const validaColaborador = () => {
         .string()
         .nonempty({ message: t('components.error.requiredField') })
         .min(8, { message: t('components.error.cepInvalid') })
-        .max(10, { message: t('components.error.cepInvalid') }),
+        .max(8, { message: t('components.error.cepInvalid') }),
       numero: z
         .string()
         .nonempty({ message: t('components.error.requiredField') }),

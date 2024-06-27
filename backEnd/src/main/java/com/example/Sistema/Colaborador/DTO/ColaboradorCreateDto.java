@@ -36,7 +36,7 @@ public class ColaboradorCreateDto {
     private String rg;
     @NotEmpty
     private String telefone;
-    @NotEmpty
+//    @NotEmpty
     private String cargo;
     private Integer isUsuario;
     private String email;
@@ -44,6 +44,6 @@ public class ColaboradorCreateDto {
     private Integer role;
     private Double salario;
     private FileKey file;
-    private EnderecoDTO endereco;
     private Integer ativo;
+    private EnderecoDTO endereco;
 }

@@ -90,7 +90,7 @@ public class ColaboradorControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/colaborador/create")
-                .content(objectMapper.writeValueAsString(ColaboradorConstantTest.COLABORADOR))
+                .content(objectMapper.writeValueAsString(ColaboradorConstantTest.CREATE_COLABORADOR))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())

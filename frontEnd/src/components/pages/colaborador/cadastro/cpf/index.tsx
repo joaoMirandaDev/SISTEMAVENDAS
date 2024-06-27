@@ -107,7 +107,8 @@ export default function CadastroCpf() {
     validate: zodResolver(validaColaborador()),
   })
   const buscarDadosCep = async (value: string) => {
-    if (value !== null || value !== '') {
+    console.log(value, 'val')
+    if (value.length === 8 || value !== '') {
       const dados = await api.get(`/api/endereco/findByRegiao/${value}`)
       handleChange(dados.data.cep, 'endereco.cep'.replace(/[-. ]/g, ''))
       handleChange(dados.data.bairro, 'endereco.bairro')
