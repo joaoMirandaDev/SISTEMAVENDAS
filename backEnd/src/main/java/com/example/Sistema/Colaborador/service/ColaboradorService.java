@@ -2,7 +2,6 @@ package com.example.Sistema.Colaborador.service;
 
 import com.example.Sistema.Colaborador.DTO.ColaboradorCreateDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
-import com.example.Sistema.Colaborador.mapper.ColaboradorMapper;
 import com.example.Sistema.Documentos.service.DocumentosService;
 import com.example.Sistema.Endereco.service.EnderecoService;
 import com.example.Sistema.Usuario.services.UsuarioService;
@@ -13,7 +12,9 @@ import com.example.Sistema.Colaborador.DTO.ColaboradorDto;
 import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,8 +37,8 @@ import static com.example.Sistema.Utils.genericClass.GenericSpecificationAndPege
 public class ColaboradorService {
 
     private final MessageSource messageSource;
-    private final ColaboradorMapper mapper;
     private final DocumentosService documentosService;
+    private final ModelMapper modelMapper;
     private final EnderecoService enderecoService;
     private final UsuarioService usuarioService;
     private final ColaboradorRepository colaboradorRepository;
@@ -56,23 +57,12 @@ public class ColaboradorService {
     @Transactional(rollbackFor = Exception.class)
     public void create(@Valid ColaboradorCreateDto colaboradorDto) throws Exception {
         try {
-            Colaborador colaborador = new Colaborador();
-            colaborador.setAtivo(0);
-            colaborador.setCargo(colaboradorDto.getCargo());
-            colaborador.setCpf(colaboradorDto.getCpf());
-            colaborador.setDataContratoInicial(colaboradorDto.getDataContratoInicial());
-            colaborador.setDataNascimento(colaboradorDto.getDataNascimento());
-            colaborador.setEmail(colaboradorDto.getEmail());
-            colaborador.setNome(colaboradorDto.getNome());
-            colaborador.setSobrenome(colaboradorDto.getSobrenome());
-            colaborador.setRg(colaboradorDto.getRg());
-            colaborador.setSexo(colaboradorDto.getSexo());
-            colaborador.setSalario(colaboradorDto.getSalario());
-            colaborador.setEndereco(colaboradorDto.getEndereco() == null ? null : enderecoService.add(colaboradorDto.getEndereco()));
-            colaborador.setTelefone(colaboradorDto.getTelefone());
+            ModelMapper modelMapper = new ModelMapper();
+            Colaborador colaborador =  modelMapper.map(colaboradorDto, Colaborador.class);
             if (Objects.nonNull(colaboradorDto.getFile()) && Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
                 colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
             }
+            colaborador.setEndereco(enderecoService.add(colaboradorDto.getEndereco()));
             colaboradorRepository.save(colaborador);
             if (colaboradorDto.getIsUsuario() == 1 && !colaboradorDto.getSenha().isEmpty() && Objects.nonNull(colaboradorDto.getRole())) {
                 usuarioService.createNewUser(colaboradorDto.getSenha(),colaboradorDto.getRole(), colaborador);
@@ -117,39 +107,24 @@ public class ColaboradorService {
         }
     }
 
-//    public void editar(ColaboradorDto colaboradorDto) throws Exception {
-//        try {
-//            Colaborador colaborador = colaboradorRepository.findById(colaboradorDto.getId()).orElseThrow(() -> new NotFoundException(
-//                    messageSource.getMessage("error.find", null, locale)
-//            ));
-//                colaborador.setNome(colaboradorDto.getNome());
-//                colaborador.setSobrenome(colaboradorDto.getSobrenome());
-//                colaborador.setCpf(colaboradorDto.getCpf());
-//                colaborador.setRg(colaboradorDto.getRg());
-//                colaborador.setNumero(colaboradorDto.getNumero());
-//                colaborador.setCep(colaboradorDto.getCep());
-//                colaborador.setRua(colaboradorDto.getRua());
-//                colaborador.setBairro(colaboradorDto.getBairro());
-//                colaborador.setCidade(colaboradorDto.getCidade());
-//                colaborador.setEstado(colaboradorDto.getEstado());
-//                colaborador.setTelefone(colaboradorDto.getTelefone());
-//                colaboradorRepository.save(colaborador);
-//
-//            if (Objects.nonNull(colaboradorDto.getSenha()) && !colaboradorDto.getSenha().isEmpty()) {
-//                Usuario usuario = usuarioRepository.findByLogin(colaboradorDto.getCpf());
-//                String senhaCripto = passwordEncoder.encode(colaboradorDto.getSenha());
-//                usuario.setSenha(senhaCripto);
-//                usuarioRepository.save(usuario);
-//            }
-//        } catch (DataAccessException e) {
-//            throw new Exception(messageSource.getMessage("error.save", null, locale),e);
-//        }
-//    }
+    public void edit(ColaboradorCreateDto dto) throws Exception {
+        try {
+            Colaborador colaborador = colaboradorRepository.save(modelMapper.map(dto,Colaborador.class));
+            if (Objects.nonNull(dto.getFile()) && Objects.nonNull(dto.getFile().getKey()) && !dto.getFile().getKey().isEmpty() ) {
+                colaborador.setDocumentos(documentosService.save(dto.getFile()));
+            }
+            if (dto.getIsUsuario() == 1 && !dto.getSenha().isEmpty() && Objects.nonNull(dto.getRole())) {
+                usuarioService.editUser(dto.getSenha(),dto.getRole(), colaborador);
+            }
+        } catch (DataAccessException e) {
+            throw new Exception(messageSource.getMessage("error.save", null, LocaleInteface.BR),e);
+        }
+    }
 
     public ColaboradorDto getColaboradorByCpf(@NotNull @NotEmpty String cpf) {
         if (cpf.isEmpty()) {
             throw new IllegalArgumentException("CPF não pode ser vazio");
         }
-        return mapper.colaboradorToColaboradorDto(colaboradorRepository.findByCpf(cpf));
+        return modelMapper.map(colaboradorRepository.findByCpf(cpf),ColaboradorDto.class);
     }
 }

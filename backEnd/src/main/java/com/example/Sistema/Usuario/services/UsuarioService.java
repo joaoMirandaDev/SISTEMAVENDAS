@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,7 +50,7 @@ public class UsuarioService implements UserDetailsService {
     }
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Usuario usuario = usuarioRepository.findByLogin(username);
+        Usuario usuario = usuarioRepository.findByLogin(username).get();
 
         String[] roles = new String[]{};
 
@@ -71,7 +72,7 @@ public class UsuarioService implements UserDetailsService {
 
 
     public UsuarioDTO findByLogin(String login) {
-        Usuario user = usuarioRepository.findByLogin(login);
+        Usuario user = usuarioRepository.findByLogin(login).get();
         return new UsuarioDTO(user.getId(),user.getRole());
     }
 
@@ -84,5 +85,19 @@ public class UsuarioService implements UserDetailsService {
         usuario.setColaborador(colaborador);
         usuarioRepository.save(usuario);
 
+    }
+
+    public void editUser(String senha, Integer idRole, Colaborador colaborador) {
+        Usuario usuario = usuarioRepository.findByLogin(colaborador.getCpf()).get();
+        if (Objects.isNull(usuario)) {
+            this.createNewUser(senha,idRole,colaborador);
+        } else {
+            usuario.setLogin(colaborador.getCpf());
+            Role role = roleService.findById(idRole);
+            usuario.setRole(role);
+            usuario.setSenha(passwordEncoder.encode(senha));
+            usuario.setColaborador(colaborador);
+            usuarioRepository.save(usuario);
+        }
     }
 }

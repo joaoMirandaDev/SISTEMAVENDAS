@@ -1,9 +1,5 @@
 package com.example.Sistema.Utils.genericClass;
 
-import com.example.Sistema.Colaborador.filter.FilterColaborador;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Path;
@@ -12,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class GenericSpecificationAndPegeable {
 

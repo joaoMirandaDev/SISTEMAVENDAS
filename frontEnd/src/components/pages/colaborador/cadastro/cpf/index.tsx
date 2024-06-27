@@ -52,20 +52,23 @@ export default function CadastroCpf() {
     cpf: string
     rg: string
     dataNascimento: Date | null
+    dataContratoFinal: Date | null
     dataContratoInicial: Date | null
-    cep: string
     sexo: string
-    cidade: string
-    bairro: string
-    rua: string
-    estado: string
     isUsuario: null | number
     salario: number
     cargo: string
-    ativo: string
+    ativo: number | null
     email: string
     senha: string
-    numero: string
+    endereco: {
+      cep: string
+      cidade: string
+      bairro: string
+      rua: string
+      estado: string
+      numero: string
+    }
     roleId: null | number
     telefone: string
     file: IFile
@@ -75,24 +78,27 @@ export default function CadastroCpf() {
       nome: '',
       sobrenome: '',
       dataNascimento: null,
+      dataContratoFinal: null,
       dataContratoInicial: null,
       sexo: '',
       cpf: '',
       rg: '',
-      cep: '',
-      bairro: '',
-      cidade: '',
-      estado: '',
       telefone: '',
       cargo: '',
-      ativo: 'ATIVO',
-      rua: '',
+      ativo: 0,
       isUsuario: 0,
       email: '',
-      numero: '',
       senha: '',
       roleId: 0,
       salario: 0,
+      endereco: {
+        rua: '',
+        cep: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        numero: '',
+      },
       file: {
         name: '',
         key: '',
@@ -101,12 +107,14 @@ export default function CadastroCpf() {
     validate: zodResolver(validaColaborador()),
   })
   const buscarDadosCep = async (value: string) => {
-    const dados = await api.get(`/api/endereco/findByRegiao/${value}`)
-    handleChange(dados.data.estado, 'estado')
-    handleChange(dados.data.bairro, 'bairro')
-    handleChange(dados.data.localidade, 'cidade')
-    handleChange(dados.data.logradouro, 'rua')
-    handleChange(dados.data.uf, 'estado')
+    if (value !== null || value !== '') {
+      const dados = await api.get(`/api/endereco/findByRegiao/${value}`)
+      handleChange(dados.data.cep, 'endereco.cep'.replace(/[-. ]/g, ''))
+      handleChange(dados.data.bairro, 'endereco.bairro')
+      handleChange(dados.data.localidade, 'endereco.cidade')
+      handleChange(dados.data.logradouro, 'endereco.rua')
+      handleChange(dados.data.uf, 'endereco.estado')
+    }
   }
   const handleCheck = (val: boolean) => {
     setChecked(val)
@@ -257,7 +265,9 @@ export default function CadastroCpf() {
             w={250}
             {...form.getInputProps('rg')}
             size="xs"
-            onChange={event => handleChange(event.target.value, 'rg')}
+            onChange={event =>
+              handleChange(removeformatarCPFCNPJ(event.target.value), 'rg')
+            }
             defaultValue={form.values?.rg || ''}
             label={t('pages.colaborador.cadastro.dadosPessoais.rg')}
             placeholder={t('pages.colaborador.cadastro.dadosPessoais.inputRg')}
@@ -316,10 +326,10 @@ export default function CadastroCpf() {
             withAsterisk
             size="xs"
             w={250}
-            {...form.getInputProps('cep')}
-            defaultValue={form.values?.cep}
+            {...form.getInputProps('endereco.cep')}
+            defaultValue={form.values?.endereco.cep}
             onBlur={e => {
-              buscarDadosCep(e.target.value || '')
+              buscarDadosCep(e.target.value.replace(/[-. ]/g, '') || '')
             }}
             label={t('pages.colaborador.cadastro.endereco.endereco.cep')}
             placeholder={t(
@@ -331,9 +341,11 @@ export default function CadastroCpf() {
             withAsterisk
             size="xs"
             w={250}
-            {...form.getInputProps('cidade')}
-            defaultValue={form.values?.cidade}
-            onChange={event => handleChange(event.target.value, 'cidade')}
+            {...form.getInputProps('endereco.cidade')}
+            defaultValue={form.values?.endereco.cidade}
+            onChange={event =>
+              handleChange(event.target.value, 'endereco.cidade')
+            }
             label={t('pages.colaborador.cadastro.endereco.endereco.cidade')}
             placeholder={t(
               'pages.colaborador.cadastro.endereco.endereco.inputCidade'
@@ -344,9 +356,11 @@ export default function CadastroCpf() {
             withAsterisk
             w={250}
             size="xs"
-            {...form.getInputProps('estado')}
-            defaultValue={form.values?.estado}
-            onChange={event => handleChange(event.target.value, 'estado')}
+            {...form.getInputProps('endereco.estado')}
+            defaultValue={form.values?.endereco.estado}
+            onChange={event =>
+              handleChange(event.target.value, 'endereco.estado')
+            }
             label={t('pages.colaborador.cadastro.endereco.endereco.estado')}
             placeholder={t(
               'pages.colaborador.cadastro.endereco.endereco.inputEstado'
@@ -357,9 +371,11 @@ export default function CadastroCpf() {
             withAsterisk
             w={250}
             size="xs"
-            {...form.getInputProps('bairro')}
-            defaultValue={form.values?.bairro}
-            onChange={event => handleChange(event.target.value, 'bairro')}
+            {...form.getInputProps('endereco.bairro')}
+            defaultValue={form.values?.endereco.bairro}
+            onChange={event =>
+              handleChange(event.target.value, 'endereco.bairro')
+            }
             label={t('pages.colaborador.cadastro.endereco.endereco.bairro')}
             placeholder={t(
               'pages.colaborador.cadastro.endereco.endereco.inputBairro'
@@ -370,9 +386,9 @@ export default function CadastroCpf() {
             withAsterisk
             size="xs"
             w={250}
-            {...form.getInputProps('rua')}
-            onChange={event => handleChange(event.target.value, 'rua')}
-            defaultValue={form.values?.rua}
+            {...form.getInputProps('endereco.rua')}
+            onChange={event => handleChange(event.target.value, 'endereco.rua')}
+            defaultValue={form.values?.endereco.rua}
             label={t('pages.colaborador.cadastro.endereco.endereco.rua')}
             placeholder={t(
               'pages.colaborador.cadastro.endereco.endereco.inputRua'
@@ -383,9 +399,11 @@ export default function CadastroCpf() {
             withAsterisk
             w={250}
             size="xs"
-            {...form.getInputProps('numero')}
-            defaultValue={form.values?.numero}
-            onChange={event => handleChange(event.target.value, 'numero')}
+            {...form.getInputProps('endereco.numero')}
+            defaultValue={form.values?.endereco.numero}
+            onChange={event =>
+              handleChange(event.target.value, 'endereco.numero')
+            }
             label={t('pages.colaborador.cadastro.endereco.endereco.numero')}
             placeholder={t(
               'pages.colaborador.cadastro.endereco.endereco.inputNumero'

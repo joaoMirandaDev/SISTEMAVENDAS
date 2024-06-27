@@ -24,22 +24,7 @@ const validaColaborador = () => {
     dataContratoInicial: z
       .date()
       .max(new Date(), { message: t('components.error.dateInvalid') }),
-    cep: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') })
-      .min(8, { message: t('components.error.cepInvalid') })
-      .max(8, { message: t('components.error.cepInvalid') }),
     sexo: z.string().nonempty({ message: t('components.error.requiredField') }),
-    cidade: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
-    bairro: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
-    rua: z.string().nonempty({ message: t('components.error.requiredField') }),
-    estado: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
     salario: z
       .number()
       .positive({ message: t('components.error.requiredField') }),
@@ -48,15 +33,34 @@ const validaColaborador = () => {
       .nonempty({ message: t('components.error.requiredField') })
       .email({ message: t('components.error.emailInvalid') })
       .transform(val => val.split('@')[1]),
-    numero: z
-      .string()
-      .nonempty({ message: t('components.error.requiredField') }),
     telefone: z
       .string()
       .nonempty({ message: t('components.error.requiredField') }),
     file: z.object({
       name: z.optional(z.string()),
       key: z.optional(z.string()),
+    }),
+    endereco: z.object({
+      cep: z
+        .string()
+        .nonempty({ message: t('components.error.requiredField') })
+        .min(8, { message: t('components.error.cepInvalid') })
+        .max(10, { message: t('components.error.cepInvalid') }),
+      numero: z
+        .string()
+        .nonempty({ message: t('components.error.requiredField') }),
+      cidade: z
+        .string()
+        .nonempty({ message: t('components.error.requiredField') }),
+      bairro: z
+        .string()
+        .nonempty({ message: t('components.error.requiredField') }),
+      rua: z
+        .string()
+        .nonempty({ message: t('components.error.requiredField') }),
+      estado: z
+        .string()
+        .nonempty({ message: t('components.error.requiredField') }),
     }),
   })
 }
