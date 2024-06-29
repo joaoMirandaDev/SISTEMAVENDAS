@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-public class GenericSpecificationAndPegeable {
+public class GenericSpecification {
 
     public static <T> Specification<T> filterByIdWithJoinList(String joinProperty1, String joinProperty2, String idProperty, List<Integer> values) {
         if (values == null || values.isEmpty()) {

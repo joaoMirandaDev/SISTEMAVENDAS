@@ -1,4 +1,4 @@
-package com.example.Sistema.Swagger;
+package com.example.Sistema.Utils.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

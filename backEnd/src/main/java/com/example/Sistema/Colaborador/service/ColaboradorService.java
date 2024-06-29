@@ -5,7 +5,7 @@ import com.example.Sistema.Colaborador.filter.FilterColaborador;
 import com.example.Sistema.Documentos.service.DocumentosService;
 import com.example.Sistema.Endereco.service.EnderecoService;
 import com.example.Sistema.Usuario.services.UsuarioService;
-import com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable;
+import com.example.Sistema.Utils.genericClass.GenericSpecification;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
 import com.example.Sistema.Utils.exceptions.NotFoundException;
 import com.example.Sistema.Colaborador.DTO.ColaboradorDto;
@@ -14,7 +14,6 @@ import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +29,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.*;
 
-import static com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable.*;
+import static com.example.Sistema.Utils.genericClass.GenericSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -79,13 +78,13 @@ public class ColaboradorService {
         return new ColaboradorDto(colaborador);
     }
 
-    public Page<ColaboradorDto> findByPage(FilterColaborador filtro) {
+    public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {
         if (filtro.getId() == null || filtro.getId().isEmpty()) {
             throw new IllegalArgumentException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
         }
         Pageable pageable = createPageableFromFiltro(filtro, "nome");
 
-        Specification<Colaborador> specification = GenericSpecificationAndPegeable.
+        Specification<Colaborador> specification = GenericSpecification.
                 <Colaborador>filterByProperty("nome",filtro.getNome())
                 .and(filterByProperty("sobrenome",filtro.getSobrenome()))
                 .and(filterByProperty("cpf",filtro.getCpf()))

@@ -13,7 +13,7 @@ import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
 import com.example.Sistema.Colaborador.service.ColaboradorService;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
-import com.example.Sistema.Utils.genericClass.GenericSpecificationAndPegeable;
+import com.example.Sistema.Utils.genericClass.GenericSpecification;
 import com.example.Sistema.colaboradorTest.modelTest.ColaboradorConstantTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ public class ColaboradorServiceTest {
     private ColaboradorService colaboradorService;
 
     @Mock
-    private GenericSpecificationAndPegeable generic;
+    private GenericSpecification generic;
 
     @Mock
     private Colaborador colaborador;
