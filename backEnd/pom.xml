@@ -137,6 +137,7 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+			<version>5.2.4</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql -->
 		<dependency>
@@ -198,7 +199,7 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>9.19.4</version>
 				<configuration>
-					<url>jdbc:mysql://localhost:3306/financeiro</url>
+					<url>jdbc:mysql://mysqldb:3306/sistema</url>
 					<user>root</user>
 					<password>root</password>
 				</configuration>

@@ -7,7 +7,9 @@
     "build": "refine build",
     "start": "refine start",
     "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
-    "refine": "refine"
+    "refine": "refine",
+    "webpack-dashboard": "webpack-dashboard",
+    "webpack-dev-server": "webpack-dev-server"
   },
   "dependencies": {
     "@ant-design/icons": "5.0.1",
