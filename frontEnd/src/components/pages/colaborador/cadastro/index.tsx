@@ -254,6 +254,7 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
           <Select
             {...form.getInputProps('sexo')}
             size={'xs'}
+            w={250}
             label={t('pages.colaborador.cadastro.dadosPessoais.sexo')}
             placeholder={t(
               'pages.colaborador.cadastro.dadosPessoais.inputSexo'
@@ -295,22 +296,6 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
             }}
           >
             <DatePickerInput
-              value={form.values.dataContratoInicial}
-              {...form.getInputProps('dataContratoInicial')}
-              withAsterisk={false}
-              size="xs"
-              clearable
-              onChange={val => handleChange(val, 'dataContratoInicial')}
-              label={t(
-                'pages.colaborador.cadastro.dadosPessoais.dataContratacao'
-              )}
-              placeholder={t(
-                'pages.colaborador.cadastro.dadosPessoais.inputDataContratacao'
-              )}
-              maxDate={new Date()}
-              w={'15.625rem'}
-            />
-            <DatePickerInput
               value={form.values.dataNascimento}
               {...form.getInputProps('dataNascimento')}
               onChange={val => handleChange(val, 'dataNascimento')}
@@ -325,6 +310,22 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
                 'pages.colaborador.cadastro.dadosPessoais.inputDataNascimento'
               )}
               maxDate={new Date()}
+            />
+            <DatePickerInput
+              value={form.values.dataContratoInicial}
+              {...form.getInputProps('dataContratoInicial')}
+              withAsterisk={false}
+              size="xs"
+              clearable
+              onChange={val => handleChange(val, 'dataContratoInicial')}
+              label={t(
+                'pages.colaborador.cadastro.dadosPessoais.dataContratacao'
+              )}
+              placeholder={t(
+                'pages.colaborador.cadastro.dadosPessoais.inputDataContratacao'
+              )}
+              maxDate={new Date()}
+              w={'15.625rem'}
             />
           </DatesProvider>
         </Group>
@@ -540,7 +541,7 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
 
               <Select
                 withAsterisk
-                w={220}
+                w={250}
                 label={t('pages.colaborador.cadastro.usuario.perfil')}
                 placeholder={t(
                   'pages.colaborador.cadastro.usuario.inputPerfil'

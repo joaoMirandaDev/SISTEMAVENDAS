@@ -9,7 +9,7 @@ export default function ColaboradorCadastro() {
 
   return (
     <>
-      <Text fz={'1.5rem'} m={'1rem'} fw={'bold'}>
+      <Text fz={'1.5rem'} fw={'bold'} m={'1rem'}>
         {t('pages.colaborador.cadastro.title')}
       </Text>
       <Card shadow="sm" padding="lg" radius="md" withBorder>

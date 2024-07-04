@@ -1,5 +1,5 @@
 import Cadastro from '@components/pages/colaborador/cadastro'
-import { Title, Card, Divider } from '@mantine/core'
+import { Card, Text } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -11,11 +11,10 @@ export default function EditarFornecedor() {
 
   return (
     <>
+      <Text fz={'1.5rem'} fw={'bold'} m={'1rem'}>
+        {t('pages.colaborador.cadastro.titleEdit')}
+      </Text>
       <Card>
-        <Title fw={700} size="xl">
-          {t('pages.colaborador.cadastro.titleEdit')}
-        </Title>
-        <Divider my="md" />
         <Cadastro id={id} />
       </Card>
     </>
