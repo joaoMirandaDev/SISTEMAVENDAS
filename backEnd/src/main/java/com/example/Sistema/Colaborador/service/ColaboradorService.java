@@ -56,7 +56,6 @@ public class ColaboradorService {
     @Transactional(rollbackFor = Exception.class)
     public void create(@Valid ColaboradorCreateDto colaboradorDto) throws Exception {
         try {
-            ModelMapper modelMapper = new ModelMapper();
             Colaborador colaborador =  modelMapper.map(colaboradorDto, Colaborador.class);
             if (Objects.nonNull(colaboradorDto.getFile()) && Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
                 colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
@@ -75,7 +74,7 @@ public class ColaboradorService {
         Colaborador colaborador =  colaboradorRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR)
         ));
-        return new ColaboradorDto(colaborador);
+        return  modelMapper.map(colaborador, ColaboradorDto.class);
     }
 
     public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {

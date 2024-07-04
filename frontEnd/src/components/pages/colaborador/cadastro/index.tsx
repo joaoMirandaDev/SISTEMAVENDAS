@@ -33,12 +33,15 @@ import { IconCircleXFilled, IconDatabasePlus } from '@tabler/icons-react'
 import { IconTrash, IconUpload } from '@tabler/icons'
 import { CREATE_COLABORADOR, UPLOAD_DOCUMENTOS_TEMP } from 'src/utils/Routes'
 import { useRef, useEffect, useState } from 'react'
-import { validaColaborador } from '../../validation/schemaColaborador'
+import { validaColaborador } from '../validation/schemaColaborador'
 interface IFile {
   name: string
   key: string
 }
-export default function CadastroCpf() {
+interface Colaborador {
+  id: string | string[] | undefined | null
+}
+const Cadastro: React.FC<Colaborador> = ({ id }) => {
   const t = useTranslate()
   const [photo, setImagem] = useState<string | null>(null)
   const [checked, setChecked] = useState(false)
@@ -150,8 +153,21 @@ export default function CadastroCpf() {
 
   useEffect(() => {
     findRole()
+    if (id) {
+      getColaboradorById(id.toString())
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [id])
+
+  const getColaboradorById = async (id: string) => {
+    const value = await api.get(`/api/colaborador/findById/${id}`)
+    form.setValues(value.data)
+    form.setFieldValue(
+      'dataContratoInicial',
+      new Date(value.data.dataContratoInicial)
+    )
+    form.setFieldValue('dataNascimento', new Date(value.data.dataNascimento))
+  }
 
   const uploadPhoto = async (file: File) => {
     if (file) {
@@ -571,3 +587,4 @@ export default function CadastroCpf() {
     </form>
   )
 }
+export default Cadastro

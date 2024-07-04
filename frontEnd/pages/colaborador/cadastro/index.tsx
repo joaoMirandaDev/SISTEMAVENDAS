@@ -1,4 +1,4 @@
-import CadastroCpf from '@components/pages/colaborador/cadastro/cpf'
+import Cadastro from '@components/pages/colaborador/cadastro'
 import { Card, Text } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
 import { GetServerSideProps } from 'next'
@@ -13,7 +13,7 @@ export default function ColaboradorCadastro() {
         {t('pages.colaborador.cadastro.title')}
       </Text>
       <Card shadow="sm" padding="lg" radius="md" withBorder>
-        {<CadastroCpf />}
+        {<Cadastro id={null} />}
       </Card>
     </>
   )

@@ -63,6 +63,7 @@
       },
       "cadastro": {
         "title": "Novo colaborador",
+        "titleEdit": "Editar colaborador",
         "dadosPessoais": {
           "sexo": "Sexo",
           "inputSexo": "Selecione o sexo",

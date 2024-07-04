@@ -1,4 +1,4 @@
-import EditarColaborador from '@components/pages/colaborador/editar'
+import Cadastro from '@components/pages/colaborador/cadastro'
 import { Title, Card, Divider } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
 import { GetServerSideProps } from 'next'
@@ -13,10 +13,10 @@ export default function EditarFornecedor() {
     <>
       <Card>
         <Title fw={700} size="xl">
-          {t('pages.fornecedor.titleEdit')}
+          {t('pages.colaborador.cadastro.titleEdit')}
         </Title>
         <Divider my="md" />
-        <EditarColaborador idColaborador={id} />
+        <Cadastro id={id} />
       </Card>
     </>
   )

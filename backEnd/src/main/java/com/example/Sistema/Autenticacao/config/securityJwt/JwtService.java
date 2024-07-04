@@ -17,10 +17,10 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    @Value("${spring.security.jwt.expiracao}")
+    @Value("${spring.security.jwt.expiration}")
     private String expiracao;
 
-    @Value("${spring.security.jwt.chave-assinatura}")
+    @Value("${spring.security.jwt.key}")
     private String chaveAssinatura;
 
     public String gerarToken( Usuario usuario ){
