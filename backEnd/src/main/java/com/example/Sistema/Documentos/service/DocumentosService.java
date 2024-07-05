@@ -150,19 +150,28 @@ public class DocumentosService {
         return ResponseEntity.notFound().build();
     }
 
+    public void deleteDocumentoByPath(String val) throws IOException {
+        Path path = Paths.get(val);
+        Files.delete(path);
+    }
+
     public Documentos update(FileKey file, Documentos doc) throws Exception {
-        Documentos documentos = doc;
-        if (Objects.isNull(documentos) && Objects.nonNull(file.getKey())) {
-          return this.save(file);
+        if (Objects.isNull(doc) && Objects.nonNull(file.getKey())) {
+            return this.save(file);
         }
+        if (Objects.isNull(file.getKey())) {
+            this.deleteDocumentoByPath(doc.getRoute());
+            documentosRepository.delete(doc);
+            return null;
+        }
+        Documentos documentos = doc;
         if (Objects.nonNull(documentos) && Objects.nonNull(file.getKey())) {
             Boolean result = file.getKey().equals(documentos.getRoute());
 
             if (!result) {
                 try {
                     String route = this.moveFileToPaste(file);
-                    Path path = Paths.get(documentos.getRoute());
-                    Files.delete(path);
+                    this.deleteDocumentoByPath(documentos.getRoute());
                     documentos.setRoute(route);
                     documentosRepository.save(documentos);
                 } catch (IOException e) {
