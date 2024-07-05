@@ -1,5 +1,6 @@
 package com.example.Sistema.Documentos.service;
 
+import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Utils.Interfaces.Routes;
 import com.example.Sistema.Documentos.model.Documentos;
 import com.example.Sistema.Documentos.model.FileKey;
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,29 +71,30 @@ public class DocumentosService {
 //        }
 //    }
 
+    private String moveFileToPaste(FileKey file) throws Exception {
+        // Caminho da pasta de destino
+        String destino = Routes.PASTA_DEFINITIVA;
+
+        // Gere uma chave única para o arquivo
+        String chave = UUID.randomUUID().toString();
+
+        // Crie o arquivo de destino usando a chave no nome do arquivo
+        File arquivoDestino = new File(destino + chave);
+
+        // Baixa o arquivo da URL e salva no destino
+        saveUrlToFile(file.getKey(), arquivoDestino);
+
+        return destino + chave;
+
+    }
+
     //Salva a imagem na pasta definitiva e retorna o caminho cripto
     public Documentos save(FileKey file) throws Exception {
         try {
             Documentos documentos = new Documentos();
-            // Caminho da pasta de destino
-            String destino = Routes.PASTA_DEFINITIVA;
-
-            // Gere uma chave única para o arquivo
-            String chave = UUID.randomUUID().toString();
-
-            // Obtém o nome do arquivo da URL
-            String nomeArquivo = file.getKey();
-
-            // Crie o arquivo de destino usando a chave no nome do arquivo
-            File arquivoDestino = new File(destino + chave);
-
-            // Baixa o arquivo da URL e salva no destino
-            saveUrlToFile(file.getKey(), arquivoDestino);
-
-            documentos.setRoute(destino + chave);
+            documentos.setRoute(moveFileToPaste(file));
             documentos.setNome(file.getName());
             documentosRepository.save(documentos);
-
             return documentos ;
 
         } catch (Exception e) {
@@ -102,7 +105,6 @@ public class DocumentosService {
 
     private void saveUrlToFile(String url, File destino) throws Exception {
             Files.copy(Path.of(url), destino.toPath());
-
     }
 
     //Salva o arquivo na pasta temporaria
@@ -148,5 +150,27 @@ public class DocumentosService {
         return ResponseEntity.notFound().build();
     }
 
+    public Documentos update(FileKey file, Documentos doc) throws Exception {
+        Documentos documentos = doc;
+        if (Objects.isNull(documentos) && Objects.nonNull(file.getKey())) {
+          return this.save(file);
+        }
+        if (Objects.nonNull(documentos) && Objects.nonNull(file.getKey())) {
+            Boolean result = file.getKey().equals(documentos.getRoute());
+
+            if (!result) {
+                try {
+                    String route = this.moveFileToPaste(file);
+                    Path path = Paths.get(documentos.getRoute());
+                    Files.delete(path);
+                    documentos.setRoute(route);
+                    documentosRepository.save(documentos);
+                } catch (IOException e) {
+                    throw e;
+                }
+            }
+        }
+        return documentos;
+    }
 }
 

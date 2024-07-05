@@ -41,8 +41,8 @@ public class ColaboradorController {
 
     @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET, produces = "application/json")
     @Operation(summary = "FindById", description = "Metodo utilizado para resgatar o colaborador por ID", tags = "Colaborador")
-    public ColaboradorDto findById(@Positive @NotNull @PathVariable("id") Integer id) {
-        return colaboradorService.findById(id);
+    public ColaboradorCreateDto findById(@Positive @NotNull @PathVariable("id") Integer id) {
+        return colaboradorService.findColaboradorById(id);
     }
 
     @RequestMapping(value = "/deleteById/{id}", method = RequestMethod.DELETE, produces = "application/json")

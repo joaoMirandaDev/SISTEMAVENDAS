@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario,Short> {
    Optional<Usuario> findByLogin(String login);
 
+   void deleteByLogin(String cpf);
 }

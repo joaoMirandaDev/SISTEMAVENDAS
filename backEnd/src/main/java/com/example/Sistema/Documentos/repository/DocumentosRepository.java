@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface DocumentosRepository extends JpaRepository<Documentos,Integer> {
     @Query(nativeQuery = true, value = "select * FROM financeiro.arquivos_upload WHERE id= :id")
     Optional<Documentos> find(Short id);
+
+    @Query(nativeQuery = true, value = "select * FROM financeiro.arquivos_upload WHERE route= :key")
+    Documentos findByRoute(String key);
 }

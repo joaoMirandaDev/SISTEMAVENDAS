@@ -2,8 +2,11 @@ package com.example.Sistema.Colaborador.service;
 
 import com.example.Sistema.Colaborador.DTO.ColaboradorCreateDto;
 import com.example.Sistema.Colaborador.filter.FilterColaborador;
+import com.example.Sistema.Documentos.model.Documentos;
+import com.example.Sistema.Documentos.model.FileKey;
 import com.example.Sistema.Documentos.service.DocumentosService;
 import com.example.Sistema.Endereco.service.EnderecoService;
+import com.example.Sistema.Usuario.DTO.UsuarioDTO;
 import com.example.Sistema.Usuario.services.UsuarioService;
 import com.example.Sistema.Utils.genericClass.GenericSpecification;
 import com.example.Sistema.Utils.Interfaces.LocaleInteface;
@@ -52,11 +55,10 @@ public class ColaboradorService {
         return PageRequest.of(filtro.getPagina(), filtro.getTamanhoPagina(), sort);
     }
 
-
     @Transactional(rollbackFor = Exception.class)
     public void create(@Valid ColaboradorCreateDto colaboradorDto) throws Exception {
         try {
-            Colaborador colaborador =  modelMapper.map(colaboradorDto, Colaborador.class);
+            Colaborador colaborador = modelMapper.map(colaboradorDto, Colaborador.class);
             if (Objects.nonNull(colaboradorDto.getFile()) && Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
                 colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
             }
@@ -70,11 +72,11 @@ public class ColaboradorService {
         }
     }
 
-    public ColaboradorDto findById(@Positive @NotNull Integer id) {
+    public Colaborador findById(@Positive @NotNull Integer id) {
         Colaborador colaborador =  colaboradorRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR)
         ));
-        return  modelMapper.map(colaborador, ColaboradorDto.class);
+        return colaborador;
     }
 
     public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {
@@ -82,7 +84,6 @@ public class ColaboradorService {
             throw new IllegalArgumentException(messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR));
         }
         Pageable pageable = createPageableFromFiltro(filtro, "nome");
-
         Specification<Colaborador> specification = GenericSpecification.
                 <Colaborador>filterByProperty("nome",filtro.getNome())
                 .and(filterByProperty("sobrenome",filtro.getSobrenome()))
@@ -90,14 +91,12 @@ public class ColaboradorService {
                 .and(filterByIdWithJoin("endereco","estado",filtro.getEstado()))
                 .and(filterByIdWithJoin("endereco","cidade" ,filtro.getCidade()))
                 .and(filterByPropertyInterger("ativo", filtro.getAtivo()));
-
         Page<Colaborador> colaboradorPage = colaboradorRepository.findAll(specification, pageable);
         if (Objects.nonNull(colaboradorPage) && !colaboradorPage.getContent().isEmpty()) {
             return colaboradorPage.map(ColaboradorDto::new);
         }
         return Page.empty();
     }
-
 
     public void deleteById(@NotNull @Positive Integer id) {
         if (colaboradorRepository.existsById(id)) {
@@ -109,12 +108,19 @@ public class ColaboradorService {
 
     public void edit(ColaboradorCreateDto dto) throws Exception {
         try {
-            Colaborador colaborador = colaboradorRepository.save(modelMapper.map(dto,Colaborador.class));
+            Colaborador colaborador = this.findById(dto.getId());
+            Documentos documentos = new Documentos();
             if (Objects.nonNull(dto.getFile()) && Objects.nonNull(dto.getFile().getKey()) && !dto.getFile().getKey().isEmpty() ) {
-                colaborador.setDocumentos(documentosService.save(dto.getFile()));
+                documentos = documentosService.update(dto.getFile(), colaborador.getDocumentos());
             }
+            colaborador = modelMapper.map(dto,Colaborador.class);
+            colaborador.setDocumentos(documentos);
+            enderecoService.update(dto.getEndereco());
+            colaboradorRepository.save(colaborador);
             if (dto.getIsUsuario() == 1 && !dto.getSenha().isEmpty() && Objects.nonNull(dto.getRole())) {
                 usuarioService.editUser(dto.getSenha(),dto.getRole(), colaborador);
+            } else {
+                usuarioService.deleteByLogin(dto.getCpf());
             }
         } catch (DataAccessException e) {
             throw new Exception(messageSource.getMessage("error.save", null, LocaleInteface.BR),e);
@@ -126,5 +132,24 @@ public class ColaboradorService {
             throw new IllegalArgumentException("CPF não pode ser vazio");
         }
         return modelMapper.map(colaboradorRepository.findByCpf(cpf),ColaboradorDto.class);
+    }
+
+    public ColaboradorCreateDto findColaboradorById(Integer id) {
+        Colaborador colaborador = this.findById(id);
+        ColaboradorCreateDto dto = modelMapper.map(colaborador, ColaboradorCreateDto.class);
+        UsuarioDTO usuarioDTO = usuarioService.findByLogin(colaborador.getCpf());
+        if (Objects.nonNull(usuarioDTO)) {
+            dto.setIsUsuario(1);
+            dto.setRole(usuarioDTO.getRole().getId());
+        }
+        if (Objects.nonNull(colaborador.getDocumentos())) {
+            FileKey fileKey = new FileKey();
+            fileKey.setKey(colaborador.getDocumentos().getRoute());
+            fileKey.setName(colaborador.getDocumentos().getNome());
+            dto.setFile(fileKey);
+        } else {
+            dto.setFile(new FileKey());
+        }
+        return dto;
     }
 }

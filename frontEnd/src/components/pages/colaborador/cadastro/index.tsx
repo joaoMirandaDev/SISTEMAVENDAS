@@ -29,7 +29,11 @@ import {
 import { useRouter } from 'next/router'
 import { ErrorNotification, SuccessNotification } from '@components/common'
 import IRole from 'src/interfaces/role'
-import { IconCircleXFilled, IconDatabasePlus } from '@tabler/icons-react'
+import {
+  IconCircleXFilled,
+  IconDatabaseEdit,
+  IconDatabasePlus,
+} from '@tabler/icons-react'
 import { IconTrash, IconUpload } from '@tabler/icons'
 import { CREATE_COLABORADOR, UPLOAD_DOCUMENTOS_TEMP } from 'src/utils/Routes'
 import { useRef, useEffect, useState } from 'react'
@@ -139,6 +143,20 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
       })
       .catch(error => {
         ErrorNotification({ message: error.message })
+      })
+  }
+
+  const editar = async () => {
+    await api
+      .put(`/api/colaborador/editar`, form.values)
+      .then(() => {
+        navigate.push('/colaborador')
+        SuccessNotification({
+          message: t('pages.colaborador.editar.sucesso'),
+        })
+      })
+      .catch(error => {
+        ErrorNotification({ message: error })
       })
   }
 
@@ -569,8 +587,14 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
           >
             {t('components.button.cancelar')}
           </Button>
-          <Button leftIcon={<IconDatabasePlus />} type="submit" color="green">
-            {t('components.button.salvar')}
+          <Button
+            leftIcon={!id ? <IconDatabasePlus /> : <IconDatabaseEdit />}
+            type="submit"
+            color="green"
+          >
+            {!id
+              ? t('components.button.salvar')
+              : t('components.button.editar')}
           </Button>
         </Flex>
       </>
@@ -578,7 +602,12 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
   }
 
   return (
-    <form onSubmit={form.onSubmit(() => handleSubmit())}>
+    <form
+      onSubmit={form.onSubmit(
+        () => (!id ? handleSubmit() : editar()),
+        error => console.log(error)
+      )}
+    >
       {renderDadosPessoais()}
       {renderDadosEndereco()}
       {renderContatos()}

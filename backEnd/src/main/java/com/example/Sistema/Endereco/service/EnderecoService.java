@@ -3,7 +3,11 @@ package com.example.Sistema.Endereco.service;
 import com.example.Sistema.Endereco.Dto.EnderecoDTO;
 import com.example.Sistema.Endereco.model.Endereco;
 import com.example.Sistema.Endereco.repository.EnderecoRepository;
+import com.example.Sistema.Utils.Interfaces.LocaleInteface;
+import com.example.Sistema.Utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -11,12 +15,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class EnderecoService {
 
     private final EnderecoRepository enderecoRepository;
+    private final ModelMapper modelMapper;
+    private final MessageSource messageSource;
 
     public Object findByRegiao(String cep) throws IOException {
         long cepConvert = Long.parseLong(cep);
@@ -40,16 +48,15 @@ public class EnderecoService {
     }
 
     public Endereco add(EnderecoDTO enderecoDTO) {
-        Endereco endereco = new Endereco();
-
-        endereco.setCep(enderecoDTO.getCep());
-        endereco.setCidade(enderecoDTO.getCidade());
-        endereco.setBairro(enderecoDTO.getBairro());
-        endereco.setEstado(enderecoDTO.getEstado());
-        endereco.setRua(enderecoDTO.getRua());
-        endereco.setNumero(enderecoDTO.getNumero());
-
-       return enderecoRepository.save(endereco);
+        Endereco endereco = modelMapper.map(enderecoDTO, Endereco.class);
+        return enderecoRepository.save(endereco);
     }
 
+    public void update(EnderecoDTO endereco) {
+        if (Objects.nonNull(endereco.getId())) {
+            Endereco newObj = modelMapper.map(endereco, Endereco.class);
+            newObj.setId(endereco.getId());
+            enderecoRepository.save(newObj);
+        }
+    }
 }

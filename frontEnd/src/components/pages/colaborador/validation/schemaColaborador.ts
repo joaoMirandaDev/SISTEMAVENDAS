@@ -36,10 +36,12 @@ const validaColaborador = () => {
     telefone: z
       .string()
       .nonempty({ message: t('components.error.requiredField') }),
-    file: z.object({
-      name: z.optional(z.string()),
-      key: z.optional(z.string()),
-    }),
+    file: z
+      .object({
+        name: z.optional(z.string()),
+        key: z.optional(z.string()),
+      })
+      .optional(),
     endereco: z.object({
       cep: z
         .string()

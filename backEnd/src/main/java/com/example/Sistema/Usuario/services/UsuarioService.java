@@ -72,8 +72,11 @@ public class UsuarioService implements UserDetailsService {
 
 
     public UsuarioDTO findByLogin(String login) {
-        Usuario user = usuarioRepository.findByLogin(login).get();
-        return new UsuarioDTO(user.getId(),user.getRole());
+        Optional<Usuario> user = usuarioRepository.findByLogin(login);
+        if (user.isPresent()) {
+            return new UsuarioDTO(user.get().getId(),user.get().getRole());
+        }
+        return null;
     }
 
     public void createNewUser(String senha,Integer idRole, Colaborador colaborador) {
@@ -98,6 +101,13 @@ public class UsuarioService implements UserDetailsService {
             usuario.setSenha(passwordEncoder.encode(senha));
             usuario.setColaborador(colaborador);
             usuarioRepository.save(usuario);
+        }
+    }
+
+    public void deleteByLogin(String cpf) {
+        Optional<Usuario> user = usuarioRepository.findByLogin(cpf);
+        if (user.isPresent()) {
+            usuarioRepository.delete(user.get());
         }
     }
 }

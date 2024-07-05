@@ -11,6 +11,7 @@
     "button": {
       "logout": "Sair",
       "salvar": "Salvar",
+      "editar": "Editar",
       "cancelar": "Cancelar"
     }
   },
@@ -28,6 +29,8 @@
     "colaborador": {
       "titleListagem": "Listagem de colaboradores",
       "buttonCadastro": "Cadastrar colaborador",
+      "buttonEdit": "Editar colaborador",
+      "buttonDelete": "Deletar colaborador",
       "components": {
         "table": {
           "nome": "Nome",

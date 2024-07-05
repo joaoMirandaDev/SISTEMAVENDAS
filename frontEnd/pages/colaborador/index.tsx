@@ -551,7 +551,7 @@ export default function ColaboradorList() {
 
   const rowActions = ({ row }: { row: MRT_Row<IColaborador> }) => (
     <Flex>
-      <Tooltip label={t('pages.fornecedor.tooltip.editar')}>
+      <Tooltip label={t('pages.colaborador.buttonEdit')}>
         <ActionIcon
           disabled={validatePermissionRole()}
           size="sm"
@@ -563,7 +563,7 @@ export default function ColaboradorList() {
           <IconEdit />
         </ActionIcon>
       </Tooltip>
-      <Tooltip label={t('pages.fornecedor.tooltip.excluir')}>
+      <Tooltip label={t('pages.colaborador.buttonDelete')}>
         <ActionIcon
           disabled={validatePermissionRole()}
           size="sm"
