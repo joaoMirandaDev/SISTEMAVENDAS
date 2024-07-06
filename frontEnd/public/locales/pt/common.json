@@ -1,11 +1,17 @@
 {
   "components": {
+    "status": "Status",
+    "sucess": {
+      "dataSucess": "Dados salvo com sucesso!"
+    },
     "error": {
-      "requiredField": "Campo obrigatório",
-      "cpfField": "CPF inválido",
-      "cepInvalid": "CEP inválido",
-      "emailInvalid": "E-mail inválido",
-      "dateInvalid": "Data inválida"
+      "requiredField": "Campo obrigatório!",
+      "cpfField": "CPF inválido!",
+      "cepInvalid": "CEP inválido!",
+      "emailInvalid": "E-mail inválido!",
+      "dateInvalid": "Data inválida!",
+      "errorBack": "Erro no servidor!",
+      "errorGeneric": "Erro ao salvar dados!"
     },
     "photo": "Insira uma foto",
     "button": {
@@ -27,6 +33,12 @@
       "entrar": "Entrar"
     },
     "colaborador": {
+      "message": {
+        "active": "Colaborador ativado com sucesso!",
+        "disable": "Colaborador desativado com sucesso!"
+      },
+      "active": "Ativar",
+      "disable": "Desativar",
       "titleListagem": "Listagem de colaboradores",
       "buttonCadastro": "Cadastrar colaborador",
       "buttonEdit": "Editar colaborador",

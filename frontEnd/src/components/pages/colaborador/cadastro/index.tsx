@@ -3,14 +3,11 @@ import {
   ActionIcon,
   Avatar,
   Button,
-  Checkbox,
   FileButton,
   Flex,
   Group,
   NumberInput,
-  PasswordInput,
   Select,
-  SelectItem,
   Text,
   TextInput,
   Title,
@@ -28,7 +25,6 @@ import {
 } from 'src/utils/FormatterUtils'
 import { useRouter } from 'next/router'
 import { ErrorNotification, SuccessNotification } from '@components/common'
-import IRole from 'src/interfaces/role'
 import {
   IconCircleXFilled,
   IconDatabaseEdit,
@@ -48,9 +44,7 @@ interface Colaborador {
 const Cadastro: React.FC<Colaborador> = ({ id }) => {
   const t = useTranslate()
   const [photo, setImagem] = useState<string | null>(null)
-  const [checked, setChecked] = useState(false)
   const resetRef = useRef<() => void>(null)
-  const [role, setRole] = useState<SelectItem[]>([])
   const navigate = useRouter()
   const form = useForm<{
     id: number | null
@@ -59,15 +53,12 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
     cpf: string
     rg: string
     dataNascimento: Date | null
-    dataContratoFinal: Date | null
     dataContratoInicial: Date | null
     sexo: string
-    isUsuario: null | number
     salario: number
     cargo: string
     ativo: number | null
     email: string
-    senha: string
     endereco: {
       cep: string
       cidade: string
@@ -76,7 +67,6 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
       estado: string
       numero: string
     }
-    roleId: null | number
     telefone: string
     file: IFile
   }>({
@@ -85,7 +75,6 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
       nome: '',
       sobrenome: '',
       dataNascimento: null,
-      dataContratoFinal: null,
       dataContratoInicial: null,
       sexo: '',
       cpf: '',
@@ -93,10 +82,7 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
       telefone: '',
       cargo: '',
       ativo: 0,
-      isUsuario: 0,
       email: '',
-      senha: '',
-      roleId: 0,
       salario: 0,
       endereco: {
         rua: '',
@@ -114,7 +100,6 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
     validate: zodResolver(validaColaborador()),
   })
   const buscarDadosCep = async (value: string) => {
-    console.log(value, 'val')
     if (value.length === 8 || value !== '') {
       const dados = await api.get(`/api/endereco/findByRegiao/${value}`)
       handleChange(dados.data.cep, 'endereco.cep'.replace(/[-. ]/g, ''))
@@ -124,10 +109,7 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
       handleChange(dados.data.uf, 'endereco.estado')
     }
   }
-  const handleCheck = (val: boolean) => {
-    setChecked(val)
-    handleChange(val === true ? 1 : 0, 'isUsuario')
-  }
+
   const handleChange = (
     event: string | number | boolean | DateValue | File,
     key: string
@@ -141,8 +123,8 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
         navigate.push('/colaborador')
         SuccessNotification({ message: response.data })
       })
-      .catch(error => {
-        ErrorNotification({ message: error.message })
+      .catch(() => {
+        ErrorNotification({ message: t('components.error.errorBack') })
       })
   }
 
@@ -152,25 +134,18 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
       .then(() => {
         navigate.push('/colaborador')
         SuccessNotification({
-          message: t('pages.colaborador.editar.sucesso'),
+          message: t('components.sucess.dataSucess'),
         })
       })
       .catch(error => {
-        ErrorNotification({ message: error })
+        ErrorNotification({
+          title: t('components.status') + ': ' + error.response.status,
+          message: t('components.error.errorGeneric'),
+        })
       })
   }
 
-  const findRole = async () => {
-    const dados = await api.get(`/api/role/`)
-    const data = dados.data.map((data: IRole) => ({
-      value: data.id,
-      label: data.name,
-    }))
-    setRole(data)
-  }
-
   useEffect(() => {
-    findRole()
     if (id) {
       getColaboradorById(id.toString())
     }
@@ -532,50 +507,6 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
     )
   }
 
-  const renderUsuario = () => {
-    return (
-      <>
-        <Checkbox
-          checked={checked}
-          mt={'1rem'}
-          onChange={event => handleCheck(event.currentTarget.checked)}
-          label={t('pages.colaborador.cadastro.usuario.check')}
-        />
-        {checked && (
-          <>
-            <Text fw={700} mt={'1rem'} size="md">
-              {t('pages.colaborador.cadastro.usuario.title')}
-            </Text>
-            <Group>
-              <PasswordInput
-                withAsterisk
-                w={250}
-                size="xs"
-                value={form.values?.senha}
-                onChange={event => handleChange(event.target.value, 'senha')}
-                label={t('pages.colaborador.cadastro.usuario.senha')}
-                placeholder={t('pages.colaborador.cadastro.usuario.inputSenha')}
-              />
-
-              <Select
-                withAsterisk
-                w={250}
-                label={t('pages.colaborador.cadastro.usuario.perfil')}
-                placeholder={t(
-                  'pages.colaborador.cadastro.usuario.inputPerfil'
-                )}
-                onChange={event => handleChange(event, 'role')}
-                withinPortal
-                size="xs"
-                data={role}
-              />
-            </Group>
-          </>
-        )}
-      </>
-    )
-  }
-
   const renderButtons = () => {
     return (
       <>
@@ -602,17 +533,11 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
   }
 
   return (
-    <form
-      onSubmit={form.onSubmit(
-        () => (!id ? handleSubmit() : editar()),
-        error => console.log(error)
-      )}
-    >
+    <form onSubmit={form.onSubmit(() => (!id ? handleSubmit() : editar()))}>
       {renderDadosPessoais()}
       {renderDadosEndereco()}
       {renderContatos()}
       {renderDadosAdministrativos()}
-      {renderUsuario()}
       {renderButtons()}
     </form>
   )

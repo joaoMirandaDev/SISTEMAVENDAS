@@ -91,16 +91,16 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public void editUser(String senha, Integer idRole, Colaborador colaborador) {
-        Usuario usuario = usuarioRepository.findByLogin(colaborador.getCpf()).get();
-        if (Objects.isNull(usuario)) {
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(colaborador.getCpf());
+        if (!usuario.isPresent()) {
             this.createNewUser(senha,idRole,colaborador);
         } else {
-            usuario.setLogin(colaborador.getCpf());
+            usuario.get().setLogin(colaborador.getCpf());
             Role role = roleService.findById(idRole);
-            usuario.setRole(role);
-            usuario.setSenha(passwordEncoder.encode(senha));
-            usuario.setColaborador(colaborador);
-            usuarioRepository.save(usuario);
+            usuario.get().setRole(role);
+            usuario.get().setSenha(passwordEncoder.encode(senha));
+            usuario.get().setColaborador(colaborador);
+            usuarioRepository.save(usuario.get());
         }
     }
 

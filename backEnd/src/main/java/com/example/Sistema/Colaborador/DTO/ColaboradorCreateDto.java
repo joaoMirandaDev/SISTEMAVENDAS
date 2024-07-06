@@ -23,11 +23,8 @@ public class ColaboradorCreateDto {
     private String nome;
     @NotEmpty
     private String sobrenome;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="GMT-3")
     private Date dataNascimento;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="GMT-3")
     private Date dataContratoInicial;
-    private Date dataContratoFinal;
     @NotEmpty
     private String sexo;
     @NotEmpty
@@ -36,12 +33,8 @@ public class ColaboradorCreateDto {
     private String rg;
     @NotEmpty
     private String telefone;
-//    @NotEmpty
     private String cargo;
-    private Integer isUsuario;
     private String email;
-    private String senha;
-    private Integer role;
     private Double salario;
     private FileKey file;
     private Integer ativo;

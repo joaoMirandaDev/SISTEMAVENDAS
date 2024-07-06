@@ -9,5 +9,5 @@ export default interface IFiltoColaborador {
   cpf?: string
   estado?: string
   cidade?: string
-  ativo?: number | string
+  ativo?: number | string | null
 }

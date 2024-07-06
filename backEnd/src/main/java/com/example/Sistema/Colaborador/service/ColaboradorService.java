@@ -57,19 +57,14 @@ public class ColaboradorService {
 
     @Transactional(rollbackFor = Exception.class)
     public void create(@Valid ColaboradorCreateDto colaboradorDto) throws Exception {
-        try {
+
             Colaborador colaborador = modelMapper.map(colaboradorDto, Colaborador.class);
             if (Objects.nonNull(colaboradorDto.getFile()) && Objects.nonNull(colaboradorDto.getFile().getKey()) && !colaboradorDto.getFile().getKey().isEmpty() ) {
                 colaborador.setDocumentos(documentosService.save(colaboradorDto.getFile()));
             }
             colaborador.setEndereco(enderecoService.add(colaboradorDto.getEndereco()));
             colaboradorRepository.save(colaborador);
-            if (colaboradorDto.getIsUsuario() == 1 && !colaboradorDto.getSenha().isEmpty() && Objects.nonNull(colaboradorDto.getRole())) {
-                usuarioService.createNewUser(colaboradorDto.getSenha(),colaboradorDto.getRole(), colaborador);
-            }
-        } catch (DataAccessException e) {
-            throw new Exception(messageSource.getMessage("error.save", null, LocaleInteface.BR),e);
-        }
+
     }
 
     public Colaborador findById(@Positive @NotNull Integer id) {
@@ -77,6 +72,12 @@ public class ColaboradorService {
                 messageSource.getMessage("error.isEmpty", null, LocaleInteface.BR)
         ));
         return colaborador;
+    }
+
+    public void activeOrDisableColaborador(Integer id, Integer status) {
+        Colaborador colaborador = this.findById(id);
+        colaborador.setAtivo(status);
+        colaboradorRepository.save(colaborador);
     }
 
     public Page<ColaboradorDto> findByPage(@Valid FilterColaborador filtro) {
@@ -117,11 +118,6 @@ public class ColaboradorService {
             colaborador.setDocumentos(documentos);
             enderecoService.update(dto.getEndereco());
             colaboradorRepository.save(colaborador);
-            if (dto.getIsUsuario() == 1 && !dto.getSenha().isEmpty() && Objects.nonNull(dto.getRole())) {
-                usuarioService.editUser(dto.getSenha(),dto.getRole(), colaborador);
-            } else {
-                usuarioService.deleteByLogin(dto.getCpf());
-            }
         } catch (DataAccessException e) {
             throw new Exception(messageSource.getMessage("error.save", null, LocaleInteface.BR),e);
         }
@@ -137,11 +133,6 @@ public class ColaboradorService {
     public ColaboradorCreateDto findColaboradorById(Integer id) {
         Colaborador colaborador = this.findById(id);
         ColaboradorCreateDto dto = modelMapper.map(colaborador, ColaboradorCreateDto.class);
-        UsuarioDTO usuarioDTO = usuarioService.findByLogin(colaborador.getCpf());
-        if (Objects.nonNull(usuarioDTO)) {
-            dto.setIsUsuario(1);
-            dto.setRole(usuarioDTO.getRole().getId());
-        }
         if (Objects.nonNull(colaborador.getDocumentos())) {
             FileKey fileKey = new FileKey();
             fileKey.setKey(colaborador.getDocumentos().getRoute());

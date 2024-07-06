@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
-import { IconEdit, IconTrash, IconUserPlus } from '@tabler/icons'
+import { IconEdit, IconTrash, IconUserMinus, IconUserPlus } from '@tabler/icons'
 import Cookies from 'js-cookie'
 import {
   MRT_ColumnDef,
@@ -60,7 +60,7 @@ export default function ColaboradorList() {
     cpf: '',
     estado: '',
     cidade: '',
-    ativo: 0,
+    ativo: null,
     pagina: 0,
     tamanhoPagina: 10,
     id: 'nome',
@@ -73,7 +73,7 @@ export default function ColaboradorList() {
       cpf: '',
       estado: '',
       cidade: '',
-      ativo: 0,
+      ativo: null,
       pagina: 0,
       tamanhoPagina: 10,
       id: 'nome',
@@ -203,6 +203,24 @@ export default function ColaboradorList() {
     setOpenModal(true)
   }
 
+  const disableOrActive = async (id: number, status: string | number) => {
+    const val = status === 'Ativo' ? 1 : 0
+    api
+      .put(`/api/colaborador/activeOrDisable/${id}/${val}`)
+      .then(() => {
+        SuccessNotification({
+          message:
+            val === 1
+              ? t('pages.colaborador.message.disable')
+              : t('pages.colaborador.message.active'),
+        })
+        findAllColaborador()
+      })
+      .catch(() => {
+        ErrorNotification({ message: t('components.error.errorGeneric') })
+      })
+  }
+
   const confirmaExclusao = async (confirm: boolean) => {
     if (idCliente && confirm) {
       api
@@ -257,7 +275,16 @@ export default function ColaboradorList() {
               src={row.original.photo}
               style={{ borderRadius: '100%' }}
             />
-            <span>{renderedCellValue}</span>
+            <span>
+              {renderedCellValue}
+              {row.original.ativo === 'Ativo' ? (
+                ''
+              ) : (
+                <Text fw={'bold'} color="red">
+                  Inativo
+                </Text>
+              )}
+            </span>
           </Box>
         ),
       },
@@ -551,16 +578,36 @@ export default function ColaboradorList() {
 
   const rowActions = ({ row }: { row: MRT_Row<IColaborador> }) => (
     <Flex>
-      <Tooltip label={t('pages.colaborador.buttonEdit')}>
+      {row.original.ativo === 'Ativo' && (
+        <Tooltip label={t('pages.colaborador.buttonEdit')}>
+          <ActionIcon
+            disabled={validatePermissionRole()}
+            size="sm"
+            color="blue"
+            variant="transparent"
+            aria-label="Settings"
+            onClick={() => editar(row.original.id!)}
+          >
+            <IconEdit />
+          </ActionIcon>
+        </Tooltip>
+      )}
+      <Tooltip
+        label={
+          row.original.ativo == 'Ativo'
+            ? t('pages.colaborador.disable')
+            : t('pages.colaborador.active')
+        }
+      >
         <ActionIcon
           disabled={validatePermissionRole()}
           size="sm"
-          color="blue"
+          color={row.original.ativo == 'Ativo' ? 'red' : 'green'}
           variant="transparent"
           aria-label="Settings"
-          onClick={() => editar(row.original.id!)}
+          onClick={() => disableOrActive(row.original.id!, row.original.ativo)}
         >
-          <IconEdit />
+          {row.original.ativo == 'Ativo' ? <IconUserMinus /> : <IconUserPlus />}
         </ActionIcon>
       </Tooltip>
       <Tooltip label={t('pages.colaborador.buttonDelete')}>

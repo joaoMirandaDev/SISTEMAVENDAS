@@ -57,7 +57,6 @@ public class ColaboradorController {
         }
     }
 
-
     @RequestMapping(value = "/page", method = RequestMethod.POST, produces = "application/json")
     @Operation(summary = "Paginação de colaborador", description = "Metodo utilizado para buscar os colaboradores paginados", tags = "Colaborador")
     public ResponseEntity<Page<ColaboradorDto>> findAllByPage(@Valid @RequestBody FilterColaborador filtro) {
@@ -70,10 +69,17 @@ public class ColaboradorController {
         colaboradorService.edit(colaboradorDto);
     }
 
-    @RequestMapping(value = "/findByCpfCnpj/{cpf}", method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value = "/findByCpfCnpj/{cpf}", method = RequestMethod.GET, produces = "application/json")
     @Operation(summary = "getColaboradorByCpf", description = "Metodo utilizado para resgatar os colaboradores por CPF", tags = "Colaborador")
     public ColaboradorDto getColaboradorByCpf(@NotEmpty @PathVariable("cpf") String cpf) {
         return colaboradorService.getColaboradorByCpf(cpf);
+    }
+
+    @RequestMapping(value = "/activeOrDisable/{id}/{status}", method = RequestMethod.PUT, produces = "application/json")
+    @Operation(summary = "Editar colaborador", description = "Metodo utilizado para editar os colaboradores por ID", tags = "Colaborador")
+    public ResponseEntity<Void> activeOrDisable(@Positive @PathVariable("id") Integer id, @PositiveOrZero @PathVariable("status") Integer status) throws Exception {
+        colaboradorService.activeOrDisableColaborador(id, status);
+        return ResponseEntity.noContent().build();
     }
 }
 

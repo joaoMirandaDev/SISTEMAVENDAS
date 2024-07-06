@@ -71,7 +71,7 @@ public class DocumentosService {
 //        }
 //    }
 
-    private String moveFileToPaste(FileKey file) throws Exception {
+    private String moveFileToPaste(FileKey file)  {
         // Caminho da pasta de destino
         String destino = Routes.PASTA_DEFINITIVA;
 
@@ -82,7 +82,11 @@ public class DocumentosService {
         File arquivoDestino = new File(destino + chave);
 
         // Baixa o arquivo da URL e salva no destino
-        saveUrlToFile(file.getKey(), arquivoDestino);
+        try {
+            saveUrlToFile(file.getKey(), arquivoDestino);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao mover arquivo para pasta definitiva");
+        }
 
         return destino + chave;
 
