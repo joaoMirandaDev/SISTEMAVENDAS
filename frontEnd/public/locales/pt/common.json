@@ -2,6 +2,9 @@
   "components": {
     "warning": {
       "alert": "Tem certeza ?",
+      "descriptionDeactivateColaborador": "Uma vez desativado, este colaborador não poderá ser pesquisado ou utilizado no sistema até ser reativado.",
+      "descriptionActiveColaborador": "Uma vez ativado, este colaborador estará disponível no sistema e poderá ser pesquisado e utilizado.",
+
       "descriptionDeleteColaborador": "Uma vez deletado, este colaborador será removido permanentemente e não poderá ser recuperado."
     },
     "status": "Status",
@@ -46,6 +49,7 @@
       "disable": "Desativar",
       "titleListagem": "Listagem de colaboradores",
       "buttonCadastro": "Cadastrar colaborador",
+      "buttonRelatorio": "Baixar relatório",
       "buttonEdit": "Editar colaborador",
       "buttonDelete": "Deletar colaborador",
       "components": {

@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
-import { IconEdit, IconTrash, IconUserMinus, IconUserPlus } from '@tabler/icons'
+import { IconDownload, IconEdit, IconTrash, IconUserMinus, IconUserPlus } from '@tabler/icons'
 import Cookies from 'js-cookie'
 import {
   MRT_ColumnDef,
@@ -26,15 +26,19 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import IColaborador from 'src/interfaces/colaborador'
 import IFiltoColaborador from 'src/interfaces/IfiltroColaborador'
+import ImodalWarning from 'src/interfaces/ImodalWarning'
 import api from 'src/utils/Api'
-import { getImage } from 'src/utils/Arquivo'
+import { downloadByteArrayAsFile, getImage } from 'src/utils/Arquivo'
 import { PAGE_INDEX, PAGE_SIZE } from 'src/utils/Constants'
 import {
   formataCep,
   formatarCPFCNPJ,
   formatarTelefone,
 } from 'src/utils/FormatterUtils'
-import { FIND_ALL_BY_PAGE_COLABORADOR } from 'src/utils/Routes'
+import {
+  FIND_ALL_BY_PAGE_COLABORADOR,
+  GENERATE_RELATORIO_COLABORADOR,
+} from 'src/utils/Routes'
 
 interface IColaboradorProps {
   id: string
@@ -43,10 +47,14 @@ interface IColaboradorProps {
 
 export default function ColaboradorList() {
   const t = useTranslate()
+  const [modalConfig, setModalConfig] = useState<ImodalWarning>({
+    titleWarning: '',
+    descriptionWarning: '',
+    confirm: () => {},
+  })
   const navigate = useRouter()
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [columnFilters, setColumnFilters] = useState<IColaboradorProps[]>([])
-  const [idCliente, setIdCliente] = useState<number | null>(null)
   const [sorting, setSorting] = useState<MRT_SortingState>([])
   const [dataCliente, setDataCliente] = useState<IColaborador[]>([])
   const [totalElements, setTotalElements] = useState<number>(0)
@@ -160,7 +168,6 @@ export default function ColaboradorList() {
   }
 
   const closeModal = () => {
-    setIdCliente(null)
     setOpenModal(false)
   }
 
@@ -203,33 +210,34 @@ export default function ColaboradorList() {
     setTotalElements(response.data.totalElements)
   }
 
-  const deleteColaboradorById = async (id: number) => {
-    setIdCliente(id)
-    setOpenModal(true)
-  }
-
-  const disableOrActive = async (id: number, status: string | number) => {
-    const val = status === 'Ativo' ? 1 : 0
-    api
-      .put(`/api/colaborador/activeOrDisable/${id}/${val}`)
-      .then(() => {
-        SuccessNotification({
-          message:
-            val === 1
-              ? t('pages.colaborador.message.disable')
-              : t('pages.colaborador.message.active'),
-        })
-        findAllColaborador()
-      })
-      .catch(() => {
-        ErrorNotification({ message: t('components.error.errorGeneric') })
-      })
-  }
-
-  const confirmaExclusao = async (confirm: boolean) => {
-    if (idCliente && confirm) {
+  const disableOrActive = async (
+    confirm: boolean,
+    id: number,
+    status: string | number
+  ) => {
+    if (confirm && id && status) {
+      const val = status === 'Ativo' ? 1 : 0
       api
-        .delete(`/api/colaborador/deleteById/${idCliente}`)
+        .put(`/api/colaborador/activeOrDisable/${id}/${val}`)
+        .then(() => {
+          SuccessNotification({
+            message:
+              val === 1
+                ? t('pages.colaborador.message.disable')
+                : t('pages.colaborador.message.active'),
+          })
+          findAllColaborador()
+        })
+        .catch(() => {
+          ErrorNotification({ message: t('components.error.errorGeneric') })
+        })
+    }
+  }
+
+  const confirmaExclusao = async (confirm: boolean, id: number) => {
+    if (id && confirm) {
+      api
+        .delete(`/api/colaborador/deleteById/${id}`)
         .then(response => {
           SuccessNotification({ message: response.data })
           findAllColaborador()
@@ -238,8 +246,6 @@ export default function ColaboradorList() {
         .catch(error => {
           ErrorNotification({ message: error })
         })
-    } else {
-      closeModal()
     }
   }
 
@@ -383,6 +389,39 @@ export default function ColaboradorList() {
     ],
     [t]
   )
+
+  const openDeleteModal = (id: number) => {
+    setModalConfig({
+      confirm: val => confirmaExclusao(val, id),
+      titleWarning: t('components.warning.alert'),
+      descriptionWarning: t('components.warning.descriptionDeleteColaborador'),
+    })
+    setOpenModal(true)
+  }
+
+  const openDeactivateModal = (id: number, status: string | number) => {
+    setModalConfig({
+      confirm: val => disableOrActive(val, id, status),
+      titleWarning: t('components.warning.alert'),
+      descriptionWarning:
+        status === 'Ativo'
+          ? t('components.warning.descriptionDeactivateColaborador')
+          : t('components.warning.descriptionActiveColaborador'),
+    })
+    setOpenModal(true)
+  }
+
+  const getRelatorio = () => {
+    api
+      .get(GENERATE_RELATORIO_COLABORADOR, { responseType: 'blob' })
+      .then(res => {
+        console.log(res)
+        downloadByteArrayAsFile(res.data, 'Relatorio')
+      })
+      .catch(() => {
+        console.error('Erro ao gerar relatório:')
+      })
+  }
 
   const editar = (id: number) => {
     navigate.push(`colaborador/editar/${id}`)
@@ -610,7 +649,9 @@ export default function ColaboradorList() {
           color={row.original.ativo == 'Ativo' ? 'red' : 'green'}
           variant="transparent"
           aria-label="Settings"
-          onClick={() => disableOrActive(row.original.id!, row.original.ativo)}
+          onClick={() =>
+            openDeactivateModal(row.original.id!, row.original.ativo)
+          }
         >
           {row.original.ativo == 'Ativo' ? <IconUserMinus /> : <IconUserPlus />}
         </ActionIcon>
@@ -622,7 +663,7 @@ export default function ColaboradorList() {
           color="red"
           variant="transparent"
           aria-label="Settings"
-          onClick={() => deleteColaboradorById(row.original.id!)}
+          onClick={() => openDeleteModal(row.original.id!)}
         >
           <IconTrash />
         </ActionIcon>
@@ -636,13 +677,23 @@ export default function ColaboradorList() {
         <Text fz={'1.5rem'} fw={'bold'}>
           {t('pages.colaborador.titleListagem')}
         </Text>
-        <Button
-          disabled={validatePermissionRole()}
-          leftIcon={<IconUserPlus size={16} />}
-          onClick={() => navigate.push('colaborador/cadastro')}
-        >
-          {t('pages.colaborador.buttonCadastro')}
-        </Button>
+        <Flex>
+          <Button
+            disabled={validatePermissionRole()}
+            leftIcon={<IconDownload size={16} />}
+            onClick={() => getRelatorio()}
+            mr={'0.5rem'}
+          >
+            {t('pages.colaborador.buttonRelatorio')}
+          </Button>
+          <Button
+            disabled={validatePermissionRole()}
+            leftIcon={<IconUserPlus size={16} />}
+            onClick={() => navigate.push('colaborador/cadastro')}
+          >
+            {t('pages.colaborador.buttonCadastro')}
+          </Button>
+        </Flex>
       </Flex>
       <PaginationTable
         setSorting={setSorting}
@@ -667,11 +718,9 @@ export default function ColaboradorList() {
         rowCount={totalElements}
       />
       <ModalWarning
-        confirm={confirmaExclusao}
-        titleWarning={t('components.warning.alert')}
-        descriptionWarning={t(
-          'components.warning.descriptionDeleteColaborador'
-        )}
+        confirm={modalConfig.confirm}
+        titleWarning={modalConfig.titleWarning}
+        descriptionWarning={modalConfig.descriptionWarning}
         openModal={openModal}
         closeModal={closeModal}
       />

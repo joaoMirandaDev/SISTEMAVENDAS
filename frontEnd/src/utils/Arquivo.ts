@@ -9,8 +9,9 @@ export const downloadByteArrayAsFile = (
   byteArray: Uint8Array,
   fileName: string
 ): void => {
-  const blob = new Blob([byteArray])
-  const url = URL.createObjectURL(blob)
+  const url = URL.createObjectURL(
+    new Blob([byteArray], { type: 'application/pdf' })
+  )
 
   const a = document.createElement('a')
   a.style.display = 'none'
@@ -20,7 +21,6 @@ export const downloadByteArrayAsFile = (
   document.body.appendChild(a)
   a.click()
 
-  window.URL.revokeObjectURL(url)
   document.body.removeChild(a)
 }
 

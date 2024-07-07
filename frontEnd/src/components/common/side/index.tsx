@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   CanAccess,
   ITreeMenu,
@@ -28,13 +28,10 @@ import {
   Styles,
   Flex,
   Divider,
-  Avatar,
-  Title,
   Button,
 } from '@mantine/core'
 import { IconList, IconMenu2, IconDashboard, IconLogout } from '@tabler/icons'
 import { RefineLayoutSiderProps } from '@refinedev/mantine'
-import Cookies from 'js-cookie'
 const defaultNavIcon = <IconList size={18} />
 
 export const Menu: React.FC<RefineLayoutSiderProps> = ({ render, meta }) => {
@@ -45,7 +42,6 @@ export const Menu: React.FC<RefineLayoutSiderProps> = ({ render, meta }) => {
   const { Link: LegacyLink } = useRouterContext()
   const Link = routerType === 'legacy' ? LegacyLink : NewLink
   const { defaultOpenKeys, menuItems, selectedKey } = useMenu({ meta })
-  const [name, setName] = useState<string>('')
   const isExistAuthentication = useIsExistAuthentication()
   const t = useTranslate()
   const { hasDashboard } = useRefineContext()
@@ -88,12 +84,6 @@ export const Menu: React.FC<RefineLayoutSiderProps> = ({ render, meta }) => {
     arrowOffset: 12,
     offset: 4,
   }
-
-  useEffect(() => {
-    const dados = Cookies.get('name')
-    setName(dados!)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const renderTreeView = (tree: ITreeMenu[], selectedKey?: string) => {
     return tree.map(item => {
@@ -257,16 +247,6 @@ export const Menu: React.FC<RefineLayoutSiderProps> = ({ render, meta }) => {
             height: '100vh',
           }}
         >
-          <Navbar.Section>
-            <Flex align={'center'} m={'1rem'}>
-              <Avatar alt={name} radius="xl" color="blue" />
-              <Title order={4} ml={'0.5rem'}>
-                {name}
-              </Title>
-            </Flex>
-          </Navbar.Section>
-
-          <Divider />
           <Navbar.Section grow mt="sm" component={ScrollArea} mx="-xs" px="xs">
             {renderSider()}
           </Navbar.Section>

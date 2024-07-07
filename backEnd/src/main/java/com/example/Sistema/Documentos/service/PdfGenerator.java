@@ -14,11 +14,8 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class PdfGenerator {
 
-
-    public static String PDF_EXTENSION = ".pdf";
-
     //Metodo Retornar o arquivo, a principio salva na pasta TEMP
-    public static byte[] pdf(Object obj) throws Exception {
+    public static byte[] pdf(Object obj, String nameTemplate) throws Exception {
         // Configuração do template resolver
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setSuffix(".html");
@@ -29,22 +26,17 @@ public class PdfGenerator {
         templateEngine.setTemplateResolver(templateResolver);
 
         // Gerar o PDF
-        byte[] pdfContent = gerarPDFTermo(templateEngine, obj);
+        byte[] pdfContent = gerarPDF(templateEngine, obj, nameTemplate);
 
         return pdfContent;
     }
 
-    public static byte[] gerarPDFTermo(TemplateEngine templateEngine, Object object) throws Exception {
+    public static byte[] gerarPDF(TemplateEngine templateEngine, Object object, String nameTemplate) throws Exception {
         final Context context = new Context();
 
-        LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String formattedDateTime = dateTime.format(formatter);
-
         context.setVariable("object", object);
-        context.setVariable("formattedDateTime", formattedDateTime);
 
-        String processedHtml = templateEngine.process("template/relatorio_despesas/index", context);
+        String processedHtml = templateEngine.process("template/".concat(nameTemplate), context);
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();

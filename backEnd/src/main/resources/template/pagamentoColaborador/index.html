@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Relatorio</title>
+    <style>
+        body {
+            margin:0;
+            padding: 0;
+        }
+        .table {
+            width: 100%;
+        }
+        table, th, td {
+            border:black;
+        }
+            .customers {
+          column-width:120px;
+          padding-left:20px;
+          font-family: Arial, Helvetica, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        .customers td, .customers th {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+            .margin{
+            padding-left:10px;
+        }
+
+            .columnTr{
+            width:35%;
+        }
+
+        body, span, h3, strong {
+            font-family: "Helvetica", Arial, sans-serif;
+            font-size:14px;
+        }
+
+        .customers tr:nth-child(even){background-color: #f2f2f2;}
+
+        .customers tr:hover {background-color: #ddd;}
+
+        .customers th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #228BE6;
+          color: white;
+        }
+    </style>
+</head>
+<body>
+    <table class="customers">
+        <tr>
+            <th class="columnTr">Nome</th>
+            <th>Sobrenome</th>
+            <th>Sexo</th>
+            <th>Salario</th>
+        </tr>
+
+        <tr th:each="obj : ${object}">
+            <td th:text="${obj.nome}"></td>
+            <td th:text="${obj.sobrenome}"></td>
+            <td th:text="${obj.sexo}"></td>
+            <td th:text="${obj.salario}"></td>
+        </tr>
+    </table>
+
+</body>
+</html>

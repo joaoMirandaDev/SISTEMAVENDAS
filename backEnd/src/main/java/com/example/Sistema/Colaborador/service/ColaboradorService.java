@@ -5,6 +5,7 @@ import com.example.Sistema.Colaborador.filter.FilterColaborador;
 import com.example.Sistema.Documentos.model.Documentos;
 import com.example.Sistema.Documentos.model.FileKey;
 import com.example.Sistema.Documentos.service.DocumentosService;
+import com.example.Sistema.Documentos.service.PdfGenerator;
 import com.example.Sistema.Endereco.service.EnderecoService;
 import com.example.Sistema.Usuario.DTO.UsuarioDTO;
 import com.example.Sistema.Usuario.services.UsuarioService;
@@ -14,6 +15,7 @@ import com.example.Sistema.Utils.exceptions.NotFoundException;
 import com.example.Sistema.Colaborador.DTO.ColaboradorDto;
 import com.example.Sistema.Colaborador.model.Colaborador;
 import com.example.Sistema.Colaborador.repository.ColaboradorRepository;
+import com.example.Sistema.Utils.jdbcConnection.JdbcService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
@@ -30,6 +32,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.sql.Connection;
 import java.util.*;
 
 import static com.example.Sistema.Utils.genericClass.GenericSpecification.*;
@@ -40,6 +43,8 @@ public class ColaboradorService {
 
     private final MessageSource messageSource;
     private final DocumentosService documentosService;
+    private final PdfGenerator pdfGenerator;
+    private final JdbcService jdbcService;
     private final ModelMapper modelMapper;
     private final EnderecoService enderecoService;
     private final UsuarioService usuarioService;
@@ -142,5 +147,12 @@ public class ColaboradorService {
             dto.setFile(new FileKey());
         }
         return dto;
+    }
+
+
+    public byte[] relatorioPagamentoColaborador() throws Exception {
+        String PATH = "pagamentoColaborador/index";
+        List<Colaborador> colaborador = colaboradorRepository.findAllByAtivo();
+        return PdfGenerator.pdf(colaborador, PATH);
     }
 }

@@ -14,14 +14,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.io.IOException;
 import java.util.Objects;
 
 @RestController
@@ -76,10 +79,19 @@ public class ColaboradorController {
     }
 
     @RequestMapping(value = "/activeOrDisable/{id}/{status}", method = RequestMethod.PUT, produces = "application/json")
-    @Operation(summary = "Editar colaborador", description = "Metodo utilizado para editar os colaboradores por ID", tags = "Colaborador")
+    @Operation(summary = "Editar colaborador", description = "Metodo utilizado para ativar e desativar colaborador", tags = "Colaborador")
     public ResponseEntity<Void> activeOrDisable(@Positive @PathVariable("id") Integer id, @PositiveOrZero @PathVariable("status") Integer status) throws Exception {
         colaboradorService.activeOrDisableColaborador(id, status);
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value = "/relatorioPagamentoColaborador", method = RequestMethod.GET, produces = "application/json")
+    @Operation(summary = "Gerar relatorio colaborador", description = "Metodo utilizado para gerar relatorio", tags = "Colaborador")
+    public void relatorioPagamentoColaborador(HttpServletResponse response) throws Exception {
+
+        byte[] bytes = colaboradorService.relatorioPagamentoColaborador();
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.getOutputStream().write(bytes);
     }
 }
 
