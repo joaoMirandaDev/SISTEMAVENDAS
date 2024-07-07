@@ -340,7 +340,7 @@ const Cadastro: React.FC<Colaborador> = ({ id }) => {
             {...form.getInputProps('endereco.cep')}
             defaultValue={form.values?.endereco.cep}
             onBlur={e => {
-              buscarDadosCep(e.target.value.replace(/[-. ]/g, '') || '')
+              buscarDadosCep(e.target.value.replace(/[-. ]/g, ''))
             }}
             label={t('pages.colaborador.cadastro.endereco.endereco.cep')}
             placeholder={t(

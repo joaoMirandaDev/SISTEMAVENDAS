@@ -1,5 +1,9 @@
 {
   "components": {
+    "warning": {
+      "alert": "Tem certeza ?",
+      "descriptionDeleteColaborador": "Uma vez deletado, este colaborador será removido permanentemente e não poderá ser recuperado."
+    },
     "status": "Status",
     "sucess": {
       "dataSucess": "Dados salvo com sucesso!"
@@ -18,7 +22,8 @@
       "logout": "Sair",
       "salvar": "Salvar",
       "editar": "Editar",
-      "cancelar": "Cancelar"
+      "cancelar": "Cancelar",
+      "confirm": "Confirmar"
     }
   },
   "messages": {
@@ -50,7 +55,8 @@
           "cpf": "Cpf",
           "estado": "Estado",
           "cidade": "Cidade",
-          "ativo": "Status"
+          "ativo": "Status",
+          "salario": "Sálario:"
         },
         "detailTable": {
           "dadosPessoais": {

@@ -1,6 +1,6 @@
 import { ErrorNotification, SuccessNotification } from '@components/common'
+import { ModalWarning } from '@components/common/modalWarning'
 import PaginationTable from '@components/common/tabela/paginationTable'
-import ModalColaborador from '@components/pages/colaborador/modal'
 import {
   ActionIcon,
   Avatar,
@@ -46,7 +46,7 @@ export default function ColaboradorList() {
   const navigate = useRouter()
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [columnFilters, setColumnFilters] = useState<IColaboradorProps[]>([])
-  const [idCliente, setIdCliente] = useState<number>(0)
+  const [idCliente, setIdCliente] = useState<number | null>(null)
   const [sorting, setSorting] = useState<MRT_SortingState>([])
   const [dataCliente, setDataCliente] = useState<IColaborador[]>([])
   const [totalElements, setTotalElements] = useState<number>(0)
@@ -159,6 +159,11 @@ export default function ColaboradorList() {
     setFiltro(fill)
   }
 
+  const closeModal = () => {
+    setIdCliente(null)
+    setOpenModal(false)
+  }
+
   const filterCliente = (Key: string, value: string | number) => {
     setFiltro(prevData => ({ ...prevData, [Key]: value, pagina: 0 }))
   }
@@ -228,13 +233,13 @@ export default function ColaboradorList() {
         .then(response => {
           SuccessNotification({ message: response.data })
           findAllColaborador()
-          setOpenModal(false)
+          closeModal()
         })
         .catch(error => {
           ErrorNotification({ message: error })
         })
     } else {
-      setOpenModal(false)
+      closeModal()
     }
   }
 
@@ -661,12 +666,14 @@ export default function ColaboradorList() {
         }}
         rowCount={totalElements}
       />
-      <ModalColaborador
+      <ModalWarning
+        confirm={confirmaExclusao}
+        titleWarning={t('components.warning.alert')}
+        descriptionWarning={t(
+          'components.warning.descriptionDeleteColaborador'
+        )}
         openModal={openModal}
-        title={t('pages.colaborador.modal.title')}
-        textExclusao={t('pages.colaborador.modal.text')}
-        idCliente={idCliente}
-        confirmaExclusao={confirmaExclusao}
+        closeModal={closeModal}
       />
     </>
   )

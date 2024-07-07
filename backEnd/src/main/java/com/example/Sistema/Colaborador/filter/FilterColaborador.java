@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 
 @Getter
@@ -43,4 +44,5 @@ public class FilterColaborador {
         this.pagina = pagina;
         this.nome = nome;
     }
+
 }

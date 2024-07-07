@@ -44,6 +44,7 @@ public class GenericSpecification {
                 .toArray(Predicate[]::new));
     }
 
+
     public static <T> Specification<T> filterByIdWithJoin(String joinProperty, String idProperty, Object... values) {
         if (values == null || Arrays.stream(values).anyMatch(obj -> obj == null ||
                 (obj instanceof String && ((String) obj).isEmpty()))) {
