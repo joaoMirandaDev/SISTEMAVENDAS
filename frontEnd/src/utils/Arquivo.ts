@@ -5,23 +5,12 @@ interface IFile {
   key: string
   name: string
 }
-export const downloadByteArrayAsFile = (
-  byteArray: Uint8Array,
-  fileName: string
-): void => {
+export const downloadByteArrayAsFile = (byteArray: Uint8Array): void => {
   const url = URL.createObjectURL(
     new Blob([byteArray], { type: 'application/pdf' })
   )
 
-  const a = document.createElement('a')
-  a.style.display = 'none'
-  a.href = url
-  a.download = fileName
-
-  document.body.appendChild(a)
-  a.click()
-
-  document.body.removeChild(a)
+  window.open(url)
 }
 
 export const getImage = async (val: string, text: string) => {

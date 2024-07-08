@@ -12,7 +12,13 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { useTranslate } from '@refinedev/core'
-import { IconDownload, IconEdit, IconTrash, IconUserMinus, IconUserPlus } from '@tabler/icons'
+import {
+  IconDownload,
+  IconEdit,
+  IconTrash,
+  IconUserMinus,
+  IconUserPlus,
+} from '@tabler/icons'
 import Cookies from 'js-cookie'
 import {
   MRT_ColumnDef,
@@ -415,11 +421,10 @@ export default function ColaboradorList() {
     api
       .get(GENERATE_RELATORIO_COLABORADOR, { responseType: 'blob' })
       .then(res => {
-        console.log(res)
-        downloadByteArrayAsFile(res.data, 'Relatorio')
+        downloadByteArrayAsFile(res.data)
       })
       .catch(() => {
-        console.error('Erro ao gerar relatório:')
+        console.error(t('components.error.errorGeneric'))
       })
   }
 
